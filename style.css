@@ -67,6 +67,16 @@ body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-g
 .map-link { display: block; padding: 18px; background: #f0f2f5; margin-bottom: 10px; border-radius: 15px; color: var(--hoogee-blue); text-decoration: none; font-weight: 800; }
 .map-link:hover { background: var(--hoogee-blue); color: white; }
 
+.map-tag { 
+    background: rgba(0,0,0,0.5); 
+    color: white; 
+    padding: 15px 25px; 
+    border-radius: 15px; 
+    font-weight: 900; 
+    font-size: 18px;
+    width: fit-content;
+}
+
 .top-controls { margin-left: auto; display: flex; gap: 15px; }
 .lang-btn { cursor: pointer; font-weight: 900; opacity: 0.3; padding: 8px 12px; border-radius: 5px; }
 .lang-btn.active { opacity: 1; border-bottom: 3px solid var(--hoogee-blue); }
