@@ -34,41 +34,41 @@ async function loadData() {
         const res = await fetch(`data-${currentLang}.json?v=${Date.now()}`);
         pageData = await res.json();
         
-        // Seuraava peli ja paikka (Etsitään JSONista)
+        // Peli ja Paikka
         const peli = pageData.config.seuraavaPeli;
         document.getElementById('game-label').innerText = "HooGee vs " + peli.vastustaja;
-        // Jos JSONissa ei ole 'paikka' kenttää, käytetään oletusta 'Matinkylä'
         document.getElementById('game-venue').innerText = peli.paikka || "Matinkylä TN 1";
 
-        // Tervetuloa ja Taktiikka
+        // Tekstit
         document.getElementById('welcome-p1').innerText = pageData.welcomeText1;
-        document.getElementById('tactics-text').innerText = pageData.tacticsText;
+        document.getElementById('tactics-text').innerText = pageData.tacticsText || "";
         
-        // Raportti
+        // Raportti-esikatselu
         const rpt = pageData.config.latestReport;
         const txt = typeof rpt === 'object' ? rpt.text : rpt;
-        document.getElementById('report-preview').innerText = txt.substring(0, 90) + "...";
+        document.getElementById('report-preview').innerText = txt ? txt.substring(0, 85) + "..." : "";
         
         // Listat
         document.getElementById('results-list').innerHTML = pageData.config.tulokset.map(r => `<div>${r.peli} <strong style="float:right">${r.tulos}</strong></div>`).join('');
         document.getElementById('news-list').innerHTML = pageData.config.events.map(e => `<div><b>${e.pvm}</b> ${e.nimi}</div>`).join('');
-        document.getElementById('partner-logos').innerHTML = pageData.config.kumppanit.map(p => `<img src="${p.logo}" style="height:40px; margin-left:15px;">`).join('');
+        document.getElementById('partner-logos').innerHTML = pageData.config.kumppanit.map(p => `<img src="${p.logo}" alt="${p.nimi}">`).join('');
         
-        startTimer(peli.aika);
+        updateTimer(peli.aika);
         fetchWeather();
-    } catch(e) { console.error("Data error"); }
+    } catch(e) { console.error("Latausvirhe"); }
 }
 
-function startTimer(target) {
+function updateTimer(target) {
     const el = document.getElementById('timer');
-    function update() {
+    function tick() {
         const diff = new Date(target) - new Date();
         if (diff <= 0) { el.innerText = "LIVE"; return; }
         const d = Math.floor(diff / 86400000);
         const h = Math.floor((diff % 86400000) / 3600000);
         el.innerText = `${d}pv ${h}h`;
     }
-    update(); setInterval(update, 60000);
+    tick();
+    setInterval(tick, 60000);
 }
 
 function openModal(id) {
@@ -76,21 +76,21 @@ function openModal(id) {
     let content = "";
 
     if (id === 'tervetuloa') {
-        content = `<h2>Tule mukaan toimintaan!</h2>
-            <form class="reg-form" onsubmit="event.preventDefault(); alert('Kiitos! Olemme yhteydessä.'); closeModal();">
-                <input type="text" placeholder="Pelaajan nimi" required>
-                <input type="number" placeholder="Syntymävuosi" required>
-                <input type="email" placeholder="Huoltajan sähköposti" required>
-                <button type="submit" class="cta-box" style="border:none; cursor:pointer; width:100%">LÄHETÄ ILMOITTAUTUMINEN</button>
+        content = `<h2>Tule mukaan!</h2><p>Täytä tiedot kokeilutreenejä varten.</p>
+            <form onsubmit="event.preventDefault(); alert('Kiitos!'); closeModal();" style="display:flex; flex-direction:column; gap:10px; margin-top:20px;">
+                <input type="text" placeholder="Pelaajan nimi" required style="padding:12px; border-radius:10px; border:1fr solid #ccc;">
+                <input type="email" placeholder="Sähköposti" required style="padding:12px; border-radius:10px; border:1fr solid #ccc;">
+                <button type="submit" class="cta-box" style="border:none; cursor:pointer;">LÄHETÄ</button>
             </form>`;
     } else if (id === 'driftshop') {
-        content = `<h2>Drift Shop</h2><div class="drift-item"><strong>Adidas Copa</strong><br>Koko: 38 | 15€</div><div class="drift-item"><strong>Treenipaita</strong><br>Koko: 140cm | 5€</div>`;
-    } else if (id === 'kentat') {
-        content = `<h2>Kotikentät</h2><a class="map-link" href="https://maps.google.com/?q=Matinkylän+urheilupuisto" target="_blank">Matinkylä TN1 ↗</a><a class="map-link" href="https://maps.google.com/?q=Haukilahden+kenttä" target="_blank">Toppelund ↗</a>`;
-    } else if (id === 'otteluraportit' || id === 'taktiikka') {
+        content = `<h2>Drift Shop</h2><p>Kierrätä varusteet.</p><div style="background:#f0f2f5; padding:15px; border-radius:15px; margin-top:10px;"><strong>Adidas Copa</strong><br>Koko 38 | 15€</div>`;
+    } else if (id === 'taktiikka') {
+        content = `<h2>${ui[currentLang].tactics}</h2><p style="font-size:18px; line-height:1.6;">${pageData.tacticsText}</p>`;
+    } else if (id === 'otteluraportit') {
         const rpt = pageData.config.latestReport;
-        const text = id === 'taktiikka' ? pageData.tacticsText : (typeof rpt === 'object' ? rpt.text : rpt);
-        content = `<h2>${id.toUpperCase()}</h2><p style="font-size:18px; line-height:1.6;">${text}</p>`;
+        content = `<h2>Raportti</h2><p style="font-size:16px; line-height:1.5;">${typeof rpt === 'object' ? rpt.text : rpt}</p>`;
+    } else if (id === 'kentat') {
+        content = `<h2>Kotikentät</h2><a href="#" class="cta-box" style="display:block; text-decoration:none;">MATINKYLÄ TN1</a><a href="#" class="cta-box" style="display:block; text-decoration:none; margin-top:10px;">TOPPELUND</a>`;
     }
 
     body.innerHTML = content;
@@ -98,11 +98,13 @@ function openModal(id) {
 }
 
 function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+
 async function fetchWeather() {
     const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=60.15&longitude=24.74&current_weather=true");
     const w = await res.json();
     document.getElementById('temp').innerText = Math.round(w.current_weather.temperature) + "°C";
 }
+
 function openBoard() { if(prompt("Salasana:") === "hoogee2026") alert("Tervetuloa!"); }
 
 setLanguage('fi');
