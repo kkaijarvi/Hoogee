@@ -28,21 +28,39 @@ body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-g
 .tall { grid-row: span 2; }
 .dark { background: var(--g5); color: white; }
 
-/* LISTAT */
-.list-item { margin-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 5px; }
+/* TULOKSET VÄLIRIVILLÄ */
+.list-item { margin-bottom: 20px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 8px; }
 .dark .list-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
 
-/* FOOTER */
-.footer-card { grid-column: 1 / -1; background: none !important; box-shadow: none !important; cursor: default !important; text-align: center; }
-.footer-content { color: var(--hoogee-blue); line-height: 1.6; font-weight: 400; }
-.footer-content strong, .footer-content b { font-weight: 400; } /* Varmistetaan ettei ole boldia */
-.footer-content a { color: var(--hoogee-blue); text-decoration: none; }
+/* VIIKON PELAAJA & JOUKKUEET */
+.potw-card { border: 2px solid var(--hoogee-blue); }
+.potw-flex { display: flex; align-items: center; gap: 15px; margin-top: auto; }
+.potw-siluetti { height: 60px; filter: grayscale(1); opacity: 0.8; }
+.potw-name { font-weight: 900; color: var(--hoogee-blue); }
+
+.teams-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.team-sub-btn { background: #f0f2f5; padding: 10px; border-radius: 12px; text-align: center; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; }
+.team-sub-btn:hover { background: var(--hoogee-blue); color: white; }
+
+/* FOOTER (Ei boldia, kaikki samaa fonttia) */
+.footer-card { grid-column: 1 / -1; background: none !important; box-shadow: none !important; cursor: default !important; text-align: center; padding: 40px 20px !important; }
+.footer-content { color: var(--hoogee-blue); line-height: 1.6; font-weight: 400; font-style: normal; }
+.footer-content p { margin: 5px 0; font-weight: 400 !important; }
+.footer-content a { color: var(--hoogee-blue); text-decoration: none; font-weight: 400 !important; }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 10px; }
+.modal-content { background: white; padding: 30px; border-radius: 25px; width: 100%; max-width: 600px; max-height: 90vh; position: relative; overflow-y: auto; }
+.close-btn { position: absolute; top: 10px; right: 20px; font-size: 35px; cursor: pointer; }
+.form-input { padding: 12px; border-radius: 10px; border: 1px solid #ccc; width: 100%; box-sizing: border-box; margin-bottom: 10px; font-family: inherit; }
+
+.player-list { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.player-list li { padding: 10px; background: #f0f2f5; border-radius: 10px; font-weight: 600; }
 
 /* MUUT */
 .weather-card { background: linear-gradient(135deg, #00b4db, #0083b0); color: white; }
 .map-card { background: var(--hoogee-blue) url('assets/kartta.png') center/cover no-repeat; color: white; }
 .map-tag { background: rgba(0, 45, 90, 0.8); padding: 5px 10px; border-radius: 5px; font-weight: 900; align-self: flex-start; }
-.game-flex { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
 .game-name { font-size: 28px; font-weight: 900; margin: 10px 0; }
 .timer-display { font-size: 24px; font-weight: 900; color: var(--news-pink); }
 .cta-box { background: var(--g5); color: white; padding: 15px; border-radius: 15px; text-align: center; margin-top: auto; font-weight: 900; }
@@ -52,9 +70,3 @@ body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-g
     .wide, .large, .tall { grid-column: span 1; grid-row: span 1; }
     .hero-container { flex-direction: column; text-align: center; }
 }
-
-/* MODAL */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 10px; }
-.modal-content { background: white; padding: 30px; border-radius: 25px; width: 100%; max-width: 600px; max-height: 90vh; position: relative; overflow-y: auto; }
-.close-btn { position: absolute; top: 10px; right: 20px; font-size: 35px; cursor: pointer; }
-.form-input { padding: 12px; border-radius: 10px; border: 1px solid #ccc; width: 100%; box-sizing: border-box; }

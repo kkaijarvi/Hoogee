@@ -1,6 +1,7 @@
 let currentLang = 'fi';
 let pageData = null;
 
+// DRIFT SHOP TUOTTEET
 const driftProducts = [
     { item: "HooGee Pelipaita", size: "152cm", price: "15€", seller: "M. Virtanen" },
     { item: "Adidas Nappulakengät", size: "38", price: "20€", seller: "S. Korhonen" },
@@ -8,18 +9,44 @@ const driftProducts = [
     { item: "Verryttelyhousut", size: "140cm", price: "10€", seller: "A. Nieminen" },
     { item: "Säärisuojat", size: "M", price: "5€", seller: "T. Mäkelä" },
     { item: "Maalivahdin hanskat", size: "7", price: "12€", seller: "H. Koskinen" },
-    { item: "HooGee Reppu", size: "One Size", price: "15€", seller: "E. Järvinen" },
+    { item: "HooGee Reppu", size: "OS", price: "15€", seller: "E. Järvinen" },
     { item: "Talvitreenitakki", size: "164cm", price: "30€", seller: "P. Heikkilä" },
     { item: "HooGee Pipo", size: "Lapsi", price: "5€", seller: "K. Rantanen" },
-    { item: "Shortsit", size: "152cm", price: "8€", seller: "O. Manner" }
+    { item: "Treenishortsit", size: "152cm", price: "8€", seller: "O. Manner" }
 ];
 
+// KOTIKENTÄT
 const fields = ["Matinkylä TN1", "Matinkylä TN2", "Toppelund", "Westendinpuisto", "Opinmäki", "Kaitaa", "Myntinsyrjä"];
+
+// JOUKKUEET JA PELAAJAT
+const teamRosters = {
+    'P2018': ["Luka", "Aamos", "Oliver", "Nooa", "Elias", "Hugo", "Mikael", "Niilo", "Otso", "Peetu"],
+    'T2018': ["Ellen", "Saga", "Aada", "Venla", "Alisa", "Isla", "Lumi", "Minea", "Selma", "Hilla"],
+    'Miehet': ["J. Virtanen", "M. Korhonen", "S. Laine", "A. Nieminen", "T. Mäkelä", "H. Koskinen", "E. Järvinen", "P. Heikkilä", "K. Rantanen", "O. Manner"],
+    'Naiset': ["M. Aaltonen", "L. Salonen", "K. Turunen", "E. Peltonen", "S. Haavisto", "A. Rautiainen", "V. Lehtonen", "I. Karjalainen", "J. Huttunen", "R. Seppälä"]
+};
+
+const ui = {
+    fi: { mottoT: "HOOGEESSA ON", mottoB: "HYVÄ OLLA", nextM: "SEURAAVA OTTELU", weather: "SÄÄ", wLoc: "Espoo", news: "AJANKOHTAISTA", results: "TULOKSET", welcome: "TERVETULOA", report: "OTTELURAPORTTI", fields: "KOTIKENTÄT", drift: "DRIFT SHOP", driftSub: "Käytetyt varusteet", cta: "TULE MUKAAN", tactics: "PÄIVÄN TAKTIIKKA" },
+    se: { mottoT: "I HOOGEE ÄR DET", mottoB: "GOTT ATT VARA", nextM: "NÄSTA MATCH", weather: "VÄDER", wLoc: "Esbo", news: "AKTUELLT", results: "RESULTAT", welcome: "VÄLKOMMEN", report: "MATCHRAPPORT", fields: "HEMMAPLANER", drift: "DRIFT SHOP", driftSub: "Begagnad utrustning", cta: "KOM MED", tactics: "DAGENS TAKTIK" }
+};
 
 async function setLanguage(lang) {
     currentLang = lang;
     document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
     if(document.getElementById(`btn-${lang}`)) document.getElementById(`btn-${lang}`).classList.add('active');
+    
+    const t = ui[lang];
+    const updateText = (id, text) => { if(document.getElementById(id)) document.getElementById(id).innerText = text; };
+    
+    updateText('motto-top', t.mottoT); updateText('motto-bottom', t.mottoB);
+    updateText('h3-next-match', t.nextM); updateText('h3-weather', t.weather);
+    updateText('weather-location', t.wLoc); updateText('h3-news', t.news);
+    updateText('h3-results', t.results); updateText('h3-welcome', t.welcome);
+    updateText('h3-report', t.report); updateText('h3-fields', t.fields);
+    updateText('h3-drift', t.drift); updateText('drift-sub', t.driftSub);
+    updateText('cta-text', t.cta); updateText('h3-tactics', t.tactics);
+
     await loadData();
 }
 
@@ -33,7 +60,7 @@ async function loadData() {
         document.getElementById('welcome-p1').innerText = pageData.welcomeText1;
         document.getElementById('tactics-text').innerText = pageData.tacticsText || "";
         
-        // Raportti-esikatselu
+        // Raportti-esikatselu (Nimi ja kirjoittaja)
         const rpt = pageData.config.latestReport;
         document.getElementById('report-preview').innerHTML = `<strong>${rpt.team}</strong><br><small>Kirjoittaja: ${rpt.author}</small>`;
         
@@ -47,22 +74,44 @@ async function loadData() {
         
         updateTimer(pageData.config.seuraavaPeli.aika);
         fetchWeather();
-    } catch(e) { console.error(e); }
+    } catch(e) { console.error("Data error", e); }
+}
+
+function openTeamModal(teamName) {
+    const body = document.getElementById('modalBody');
+    const players = teamRosters[teamName];
+    let content = `<h2>Joukkue: ${teamName}</h2><p>Pelaajalista:</p><ul class="player-list">`;
+    players.forEach(p => content += `<li>${p}</li>`);
+    content += `</ul>`;
+    body.innerHTML = content;
+    document.getElementById('modalOverlay').style.display = 'flex';
 }
 
 function openModal(id) {
     const body = document.getElementById('modalBody');
+    if(!pageData && id !== 'potw') return;
     let content = "";
 
-    if (id === 'driftshop') {
-        content = `<h2>Drift Shop</h2><p>Käytetyt varusteet kiertoon.</p><br>`;
+    if (id === 'potw') {
+        content = `
+            <div style="text-align:center;">
+                <img src="https://cdn-icons-png.flaticon.com/512/21/21104.png" style="height:120px; filter:grayscale(1); margin-bottom:15px;">
+                <h2>Elias "Efu" Virtanen</h2>
+                <p><strong>Joukkue:</strong> P2012</p>
+                <div style="text-align:left; background:#f0f2f5; padding:20px; border-radius:20px; margin-top:20px;">
+                    <p><strong>Kuvaus:</strong> Elias on tällä viikolla osoittanut poikkeuksellista periksiantamattomuutta. Hän on kehittynyt erityisesti pallonhallinnassa ja pelin luvussa.</p>
+                    <p style="font-style:italic; margin-top:10px;">"Efu on ollut treeneissä todellinen esimerkin näyttäjä. Asenne on ollut 100% jokaisessa harjoituksessa ja se näkyi viikonlopun peliesityksissä." <br><strong>- Valmentaja</strong></p>
+                </div>
+            </div>`;
+    } else if (id === 'driftshop') {
+        content = `<h2>Drift Shop</h2><p>Käytetyt varusteet:</p>`;
         driftProducts.forEach(p => {
-            content += `<div style="padding:10px; border-bottom:1px solid #eee;">
+            content += `<div style="padding:12px; border-bottom:1px solid #eee;">
                 <strong>${p.item} (${p.size})</strong> - ${p.price}<br>
                 <small>Myyjä: ${p.seller}</small></div>`;
         });
     } else if (id === 'kentat') {
-        content = `<h2>Kotikentät</h2><ul>` + fields.map(f => `<li style="padding:10px 0; font-size:18px;">${f}</li>`).join('') + `</ul>`;
+        content = `<h2>Kotikentät</h2><ul>` + fields.map(f => `<li style="padding:12px 0; font-size:18px; border-bottom:1px solid #eee;">${f}</li>`).join('') + `</ul>`;
     } else if (id === 'yhteistyo') {
         content = `<h2>Yhteistyössä</h2><p>Lämmin kiitos kaikille tukijoillemme ja yhteistyökumppaneillemme. Teidän panoksenne mahdollistaa laadukkaan jalkapallotoiminnan sadoille lapsille ja nuorille joka päivä.</p>`;
     } else if (id === 'otteluraportit') {
@@ -70,7 +119,7 @@ function openModal(id) {
         content = `<h2>Raportti: ${rpt.team}</h2><p style="font-size:18px; line-height:1.6;">${rpt.text}</p><hr><p>Kirjoittaja: ${rpt.author}</p>`;
     } else if (id === 'tervetuloa') {
         content = `<h2>Tule mukaan!</h2>
-            <form onsubmit="event.preventDefault(); alert('Kiitos viestistä! Otamme yhteyttä mahdollisimman pian.'); closeModal();" style="display:flex; flex-direction:column; gap:10px; margin-top:20px;">
+            <form onsubmit="event.preventDefault(); alert('Kiitos! Otamme yhteyttä.'); closeModal();" style="margin-top:20px;">
                 <input type="text" placeholder="Pelaajan nimi" class="form-input" required>
                 <input type="number" placeholder="Syntymävuosi" class="form-input" required>
                 <input type="text" placeholder="Koulu" class="form-input">
@@ -78,10 +127,10 @@ function openModal(id) {
                 <input type="text" placeholder="Aikaisempi seura" class="form-input">
                 <input type="email" placeholder="Huoltajan sähköposti" class="form-input" required>
                 <input type="tel" placeholder="Huoltajan puhelinnumero" class="form-input" required>
-                <button type="submit" class="cta-box" style="border:none; cursor:pointer; width:100%;">LÄHETÄ</button>
+                <button type="submit" class="cta-box" style="border:none; cursor:pointer; width:100%; margin-top:10px;">LÄHETÄ</button>
             </form>`;
     } else {
-        content = `<h2>${id.toUpperCase()}</h2><p>Tietoja päivitetään.</p>`;
+        content = `<h2>${id.toUpperCase()}</h2><p>Tietoja päivitetään pian.</p>`;
     }
 
     body.innerHTML = content;
@@ -89,20 +138,27 @@ function openModal(id) {
 }
 
 function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+
 function updateTimer(target) {
     const el = document.getElementById('timer');
     const tick = () => {
         const diff = new Date(target) - new Date();
         if (diff <= 0) { el.innerText = "LIVE"; return; }
-        el.innerText = `${Math.floor(diff / 86400000)}pv ${Math.floor((diff % 86400000) / 3600000)}h`;
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        el.innerText = `${d}pv ${h}h`;
     };
     tick(); setInterval(tick, 60000);
 }
+
 async function fetchWeather() {
-    const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=60.15&longitude=24.74&current_weather=true");
-    const w = await res.json();
-    document.getElementById('temp').innerText = Math.round(w.current_weather.temperature) + "°C";
+    try {
+        const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=60.15&longitude=24.74&current_weather=true");
+        const w = await res.json();
+        document.getElementById('temp').innerText = Math.round(w.current_weather.temperature) + "°C";
+    } catch(e) {}
 }
+
 function openBoard() { if(prompt("Salasana:") === "hoogee2026") alert("Tervetuloa!"); }
 
-setLanguage('fi');
+document.addEventListener('DOMContentLoaded', () => setLanguage('fi'));

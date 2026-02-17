@@ -65,6 +65,24 @@
             <div id="report-preview" class="p-small"></div>
         </div>
 
+        <div class="card potw-card" onclick="openModal('potw')">
+            <h3>VIIKON PELAAJA</h3>
+            <div class="potw-flex">
+                <img src="https://cdn-icons-png.flaticon.com/512/21/21104.png" alt="Siluetti" class="potw-siluetti">
+                <span class="potw-name">Elias "Efu" Virtanen</span>
+            </div>
+        </div>
+
+        <div class="card teams-card">
+            <h3>JOUKKUEET</h3>
+            <div class="teams-grid">
+                <div class="team-sub-btn" onclick="openTeamModal('P2018')">P2018</div>
+                <div class="team-sub-btn" onclick="openTeamModal('T2018')">T2018</div>
+                <div class="team-sub-btn" onclick="openTeamModal('Miehet')">Miehet</div>
+                <div class="team-sub-btn" onclick="openTeamModal('Naiset')">Naiset</div>
+            </div>
+        </div>
+
         <div class="card" onclick="openModal('vuosikalenteri')" style="background: url('assets/vuosikalenteri.png') center/cover;">
             <h3 class="bg-label" id="h3-year-cal">VUOSIKALENTERI</h3>
         </div>
