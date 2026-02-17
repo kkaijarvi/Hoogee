@@ -51,7 +51,7 @@
         <div class="card large" onclick="openModal('tervetuloa')">
             <h3 id="h3-welcome">TERVETULOA</h3>
             <p id="welcome-p1" class="p-text"></p>
-            <div class="cta-box" id="cta-text">TULE MUKAAN</div>
+            <div class="cta-box" id="cta-text" onclick="openModal('ilmoittautuminen'); event.stopPropagation();">TULE MUKAAN</div>
         </div>
 
         <div class="card" onclick="openModal('otteluraportit')">
@@ -62,8 +62,8 @@
         <div class="card" id="some-card">
             <h3 id="h3-some">SOME</h3>
             <div class="some-links">
-                <a href="https://instagram.com/hoogee_official" target="_blank" onclick="event.stopPropagation()"><img src="assets/insta-logo.png" style="height:35px"></a>
-                <a href="https://facebook.com/hoogee" target="_blank" onclick="event.stopPropagation()"><img src="assets/fb-logo.png" style="height:35px"></a>
+                <a href="https://instagram.com/hoogee_official" target="_blank" onclick="event.stopPropagation()"><img src="assets/insta-logo.png" alt="Instagram" style="height:35px"></a>
+                <a href="https://facebook.com/hoogee" target="_blank" onclick="event.stopPropagation()"><img src="assets/fb-logo.png" alt="Facebook" style="height:35px"></a>
             </div>
         </div>
 

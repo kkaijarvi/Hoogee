@@ -6,13 +6,15 @@ const uiTexts = {
         mottoT: "HOOGEESSA ON", mottoB: "HYVÄ OLLA", nextM: "SEURAAVA OTTELU",
         weather: "SÄÄ", news: "AJANKOHTAISTA", results: "TULOKSET", 
         welcome: "TERVETULOA", report: "OTTELURAPORTTI", fields: "KOTIKENTÄT",
-        drift: "DRIFT SHOP", driftSub: "Käytetyt varusteet", cta: "TULE MUKAAN"
+        drift: "DRIFT SHOP", driftSub: "Käytetyt varusteet", cta: "TULE MUKAAN",
+        some: "SOME", partners: "YHTEISTYÖSSÄ", shop: "SHOP"
     },
     se: {
         mottoT: "I HOOGEE ÄR DET", mottoB: "GOTT ATT VARA", nextM: "NÄSTA MATCH",
         weather: "VÄDER", news: "AKTUELLT", results: "RESULTAT", 
         welcome: "VÄLKOMMEN", report: "MATCHRAPPORT", fields: "HEMMAPLANER",
-        drift: "DRIFT SHOP", driftSub: "Begagnad utrustning", cta: "KOM MED"
+        drift: "DRIFT SHOP", driftSub: "Begagnad utrustning", cta: "KOM MED",
+        some: "SOCIALA", partners: "SAMARBETSPARTNERS", shop: "BUTIK"
     }
 };
 
@@ -33,6 +35,8 @@ async function setLanguage(lang) {
     document.getElementById('h3-fields').innerText = t.fields;
     document.getElementById('h3-drift').innerText = t.drift;
     document.getElementById('drift-sub').innerText = t.driftSub;
+    document.getElementById('h3-some').innerText = t.some;
+    document.getElementById('h3-partners').innerText = t.partners;
     document.getElementById('cta-text').innerText = t.cta;
 
     loadData();
@@ -45,7 +49,11 @@ async function loadData() {
         
         document.getElementById('game-label').innerText = "HooGee vs " + pageData.config.seuraavaPeli.vastustaja;
         document.getElementById('welcome-p1').innerText = pageData.welcomeText1;
-        document.getElementById('report-preview').innerText = pageData.config.latestReport.substring(0, 100) + "...";
+        
+        // Otteluraportin teksti - lyhenne 1 rivi tyhjää alareunassa
+        const fullReport = pageData.config.latestReport;
+        const reportPreview = fullReport.substring(0, 120) + "...";
+        document.getElementById('report-preview').innerText = reportPreview;
         
         document.getElementById('results-list').innerHTML = pageData.config.tulokset.map(r => 
             `<div>${r.peli} <strong style="float:right">${r.tulos}</strong></div>`
@@ -82,7 +90,24 @@ function openModal(id) {
     const body = document.getElementById('modalBody');
     let content = "";
 
-    if (id === 'kentat') {
+    if (id === 'ilmoittautuminen') {
+        content = `
+            <h2>${currentLang === 'fi' ? 'Ilmoittautuminen' : 'Registrering'}</h2>
+            <form id="signup-form" style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="text" placeholder="${currentLang === 'fi' ? 'Nimi' : 'Namn'}" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                <input type="email" placeholder="${currentLang === 'fi' ? 'Sähköposti' : 'E-post'}" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                <input type="text" placeholder="${currentLang === 'fi' ? 'Koulu' : 'Skola'}" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                <input type="number" placeholder="${currentLang === 'fi' ? 'Syntymävuosi' : 'Födelseår'}" min="1900" max="2020" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                <input type="text" placeholder="${currentLang === 'fi' ? 'Pelipaikka' : 'Spelposition'}" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                <input type="email" placeholder="${currentLang === 'fi' ? 'Huoltajan sähköposti' : 'Värdnadshavares e-post'}" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                <input type="tel" placeholder="${currentLang === 'fi' ? 'Huoltajan puhelinnumero' : 'Värdnadshavares telefon'}" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                <button type="submit" style="padding: 12px; background: var(--hoogee-blue); color: white; border: none; border-radius: 8px; font-weight: 900; cursor: pointer;">
+                    ${currentLang === 'fi' ? 'Ilmoittaudu' : 'Registrera'}
+                </button>
+            </form>
+        `;
+    }
+    else if (id === 'kentat') {
         const k = [
             ["Matinkylä TN1", "https://www.google.com/maps/search/?api=1&query=Matinkylän+tekonurmi+1"],
             ["Matinkylä TN2", "https://www.google.com/maps/search/?api=1&query=Matinkylän+tekonurmi+2"],
@@ -110,10 +135,22 @@ function openModal(id) {
 
     body.innerHTML = content;
     document.getElementById('modalOverlay').style.display = 'flex';
+    
+    // Kun ilmoittautuminen-formi on auki, lisää event listener
+    if (id === 'ilmoittautuminen') {
+        document.getElementById('signup-form').addEventListener('submit', handleSignup);
+    }
+}
+
+function handleSignup(e) {
+    e.preventDefault();
+    alert(currentLang === 'fi' ? 'Kiitos ilmoittautumisesta! Vastaamme pian.' : 'Tack för registreringen! Vi svarar snart.');
+    closeModal();
 }
 
 function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
 window.onclick = (e) => { if(e.target.id === 'modalOverlay') closeModal(); }
+
 async function fetchWeather() {
     try {
         const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=60.15&longitude=24.74&current_weather=true");
@@ -121,6 +158,7 @@ async function fetchWeather() {
         document.getElementById('temp').innerText = Math.round(w.current_weather.temperature) + "°C";
     } catch(e) {}
 }
+
 function openBoard() { if(prompt("Salasana") === "hoogee2026") alert("Tervetuloa hallituksen sivulle."); }
 
 setLanguage('fi');
