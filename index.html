@@ -27,7 +27,7 @@
                 <div class="game-info">
                     <h3 id="h3-next-match">SEURAAVA OTTELU</h3>
                     <div id="game-label" class="game-name">Ladataan...</div>
-                    <div id="game-venue" class="game-meta" style="color: var(--news-pink); font-weight: 700;"></div>
+                    <div id="game-venue" class="game-meta"></div>
                 </div>
                 <div id="timer" class="timer-display">--:--</div>
             </div>
@@ -36,7 +36,7 @@
         <div class="card weather-card" onclick="openModal('weather')">
             <h3 id="h3-weather">SÄÄ</h3>
             <div id="temp">--°C</div>
-            <div id="weather-location" style="font-size: 14px; font-weight: 700; opacity: 0.9; margin-top: auto;">Espoo</div>
+            <div id="weather-location" class="weather-loc-text">Espoo</div>
         </div>
 
         <div class="card tall" onclick="openModal('ajankohtaista')">
@@ -57,7 +57,7 @@
 
         <div class="card" onclick="openModal('taktiikka')">
             <h3 id="h3-tactics">PÄIVÄN TAKTIIKKA</h3>
-            <p id="tactics-text" class="p-small" style="font-style: italic; margin-top: 10px;"></p>
+            <p id="tactics-text" class="p-small italic-text"></p>
         </div>
 
         <div class="card" onclick="openModal('otteluraportit')">
@@ -66,7 +66,7 @@
         </div>
 
         <div class="card" onclick="openModal('vuosikalenteri')" style="background: url('assets/vuosikalenteri.png') center/cover;">
-            <h3 class="bg-label" id="h3-year-cal" style="background: rgba(255,255,255,0.8); padding: 5px; border-radius: 5px; display: inline-block;">VUOSIKALENTERI</h3>
+            <h3 class="bg-label" id="h3-year-cal">VUOSIKALENTERI</h3>
         </div>
 
         <div class="card wide" onclick="openModal('yhteistyo')">
@@ -84,6 +84,14 @@
         </div>
 
         <div class="card" onclick="openBoard()"><h3>HALLITUS 🔒</h3></div>
+
+        <div class="card footer-card">
+            <div class="footer-content">
+                <p><strong>Haukilahden Pallo HooGee ry - Gäddviks Boll HooGee rf</strong></p>
+                <p>Madetie 4A, 02170 ESPOO</p>
+                <p><a href="mailto:toimisto@hoogee.fi">toimisto@hoogee.fi</a></p>
+            </div>
+        </div>
     </div>
 
     <div class="modal-overlay" id="modalOverlay">

@@ -30,7 +30,7 @@ body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-g
 }
 
 .card { 
-    padding: 25px 25px 40px 25px; /* Reilu alareunan padding */
+    padding: 25px 25px 40px 25px; 
     border-radius: 30px; 
     background: white; 
     cursor: pointer; 
@@ -40,41 +40,58 @@ body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-g
     position: relative; 
     overflow: hidden; 
 }
+.card:hover:not(.footer-card) { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
 
 .wide { grid-column: span 2; }
 .large { grid-column: span 2; grid-row: span 2; }
 .tall { grid-row: span 2; }
 .dark { background: var(--g5); color: white; }
 
-/* KOTIKENTÄT KUVALLA */
-.map-card { 
-    background: var(--hoogee-blue) url('assets/kartta.png') center/cover no-repeat; 
-    color: white; 
-}
+/* SPESIAALIKORTIT */
+.weather-card { background: linear-gradient(135deg, #00b4db, #0083b0); color: white; }
+.weather-loc-text { font-size: 14px; font-weight: 700; opacity: 0.9; margin-top: auto; }
+.map-card { background: var(--hoogee-blue) url('assets/kartta.png') center/cover no-repeat; color: white; }
 .map-tag { background: rgba(0, 45, 90, 0.8); padding: 5px 10px; border-radius: 5px; font-weight: 900; align-self: flex-start; }
+.bg-label { background: rgba(255,255,255,0.85); padding: 5px 10px; border-radius: 10px; display: inline-block; color: var(--hoogee-blue); }
+
+/* FOOTER LAATIKKO */
+.footer-card {
+    grid-column: 1 / -1;
+    background: none !important;
+    box-shadow: none !important;
+    cursor: default !important;
+    padding: 40px 20px !important;
+    text-align: center;
+}
+.footer-content { color: var(--hoogee-blue); line-height: 1.6; }
+.footer-content a { color: var(--hoogee-blue); text-decoration: none; font-weight: 700; }
+
+/* ELEMENTS */
+#temp { font-size: 48px; font-weight: 900; margin-top: 10px; }
+.game-flex { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+.game-name { font-size: clamp(20px, 4vw, 28px); font-weight: 900; line-height: 1.1; margin: 10px 0; }
+.game-meta { color: var(--news-pink); font-weight: 700; font-size: 14px; }
+.timer-display { font-size: 24px; font-weight: 900; color: var(--news-pink); }
+.cta-box { background: var(--g5); color: white; padding: 15px; border-radius: 15px; text-align: center; margin-top: auto; font-weight: 900; }
+.italic-text { font-style: italic; margin-top: 10px; line-height: 1.4; }
 
 /* MOBIILI-SKAALAUS */
 @media (max-width: 1024px) {
     .container { grid-template-columns: repeat(2, 1fr); }
-    .hero-container { padding: 20px; gap: 20px; }
     .hero-logo { height: 100px; }
 }
 
 @media (max-width: 600px) {
     .container { grid-template-columns: 1fr; padding: 10px; }
     .wide, .large, .tall { grid-column: span 1; grid-row: span 1; }
-    .hero-container { flex-direction: column; text-align: center; }
-    .top-controls { margin: 20px 0 0 0; }
+    .hero-container { flex-direction: column; text-align: center; padding: 20px; }
+    .top-controls { margin: 20px auto 0; }
     .motto-row-top { font-size: 24px; }
-    .motto-row-bottom { font-size: 44px; }
-    .card { padding: 20px 20px 30px 20px; min-height: 160px; }
+    .motto-row-bottom { font-size: 40px; }
+    .card { padding: 20px 20px 35px 20px; }
 }
 
-/* SÄÄ JA OTTELU */
-.weather-card { background: linear-gradient(135deg, #00b4db, #0083b0); color: white; }
-#temp { font-size: 48px; font-weight: 900; margin-top: 10px; }
-.game-flex { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
-.game-name { font-size: 28px; font-weight: 900; line-height: 1.1; margin: 10px 0; }
-.timer-display { font-size: 24px; font-weight: 900; color: var(--news-pink); white-space: nowrap; }
-.cta-box { background: var(--g5); color: white; padding: 15px; border-radius: 15px; text-align: center; margin-top: auto; font-weight: 900; }
-.partners-right img { height: 40px; margin-left: 10px; filter: grayscale(1); }
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 10px; }
+.modal-content { background: white; padding: 30px; border-radius: 25px; width: 100%; max-width: 600px; max-height: 90vh; position: relative; overflow-y: auto; }
+.close-btn { position: absolute; top: 10px; right: 20px; font-size: 35px; cursor: pointer; }
