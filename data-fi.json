@@ -3,10 +3,14 @@
   "tacticsText": "Tiivis puolustusmuoto ja nopeat käännöt laitojen kautta.",
   "config": {
     "seuraavaPeli": { "vastustaja": "EsPa", "aika": "2026-05-20T18:30:00" },
-    "latestReport": "Upea taisteluvoitto Matinkylässä! HooGee hallitsi peliä alusta loppuun saakka. Joukkueen yhteispeli oli saumatonta ja viimeistely tehokasta. Maalintekijöinä loistivat tänään koko hyökkäyskalusto. Tästä on hyvä jatkaa seuraavaan koitokseen!",
+    "latestReport": {
+      "team": "T2011",
+      "author": "Petri Jokinen",
+      "text": "Upea taisteluvoitto Matinkylässä! HooGee hallitsi peliä alusta loppuun saakka. Joukkueen yhteispeli oli saumatonta ja viimeistely tehokasta. Maalintekijöinä loistivat tänään koko hyökkäyskalusto. Tästä on hyvä jatkaa seuraavaan koitokseen!"
+    },
     "kumppanit": [
-      { "nimi": "Intersport", "logo": "assets/intersport.png", "linkki": "https://intersport.fi" },
-      { "nimi": "K-Market", "logo": "assets/kmarket.png", "linkki": "https://k-ruoka.fi" }
+      { "nimi": "InterSport", "logo": "assets/intersport.png", "linkki": "https://intersport.fi" },
+      { "nimi": "K-Market Sorsakivi", "logo": "assets/kmarket.png", "linkki": "https://k-ruoka.fi" }
     ],
     "tulokset": [
       { "peli": "HooGee M1 vs Pöxyt", "tulos": "3 - 1" },

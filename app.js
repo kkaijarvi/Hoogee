@@ -1,164 +1,105 @@
-let currentLang = 'fi';
-let pageData = null;
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HooGee Hub 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-const uiTexts = {
-    fi: {
-        mottoT: "HOOGEESSA ON", mottoB: "HYVÄ OLLA", nextM: "SEURAAVA OTTELU",
-        weather: "SÄÄ", news: "AJANKOHTAISTA", results: "TULOKSET", 
-        welcome: "TERVETULOA", report: "OTTELURAPORTTI", fields: "KOTIKENTÄT",
-        drift: "DRIFT SHOP", driftSub: "Käytetyt varusteet", cta: "TULE MUKAAN",
-        some: "SOME", partners: "YHTEISTYÖSSÄ", shop: "SHOP"
-    },
-    se: {
-        mottoT: "I HOOGEE ÄR DET", mottoB: "GOTT ATT VARA", nextM: "NÄSTA MATCH",
-        weather: "VÄDER", news: "AKTUELLT", results: "RESULTAT", 
-        welcome: "VÄLKOMMEN", report: "MATCHRAPPORT", fields: "HEMMAPLANER",
-        drift: "DRIFT SHOP", driftSub: "Begagnad utrustning", cta: "KOM MED",
-        some: "SOCIALA", partners: "SAMARBETSPARTNERS", shop: "BUTIK"
-    }
-};
+    <header class="hero-container">
+        <img src="assets/logo.png" alt="HooGee" class="hero-logo">
+        <div class="hero-motto-box">
+            <span class="motto-row-top" id="motto-top">HOOGEESSA ON</span>
+            <span class="motto-row-bottom" id="motto-bottom">HYVÄ OLLA</span>
+        </div>
+        <div class="top-controls">
+            <span class="lang-btn active" id="btn-fi" onclick="setLanguage('fi')">FI</span>
+            <span class="lang-btn" id="btn-se" onclick="setLanguage('se')">SE</span>
+        </div>
+    </header>
 
-async function setLanguage(lang) {
-    currentLang = lang;
-    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(`btn-${lang}`).classList.add('active');
-    
-    const t = uiTexts[lang];
-    document.getElementById('motto-top').innerText = t.mottoT;
-    document.getElementById('motto-bottom').innerText = t.mottoB;
-    document.getElementById('h3-next-match').innerText = t.nextM;
-    document.getElementById('h3-weather').innerText = t.weather;
-    document.getElementById('h3-news').innerText = t.news;
-    document.getElementById('h3-results').innerText = t.results;
-    document.getElementById('h3-welcome').innerText = t.welcome;
-    document.getElementById('h3-report').innerText = t.report;
-    document.getElementById('h3-fields').innerText = t.fields;
-    document.getElementById('h3-drift').innerText = t.drift;
-    document.getElementById('drift-sub').innerText = t.driftSub;
-    document.getElementById('h3-some').innerText = t.some;
-    document.getElementById('h3-partners').innerText = t.partners;
-    document.getElementById('cta-text').innerText = t.cta;
+    <div class="container" id="main-grid">
+        <div class="card wide dark" onclick="openModal('ottelut')">
+            <div class="game-flex">
+                <div class="game-info">
+                    <h3 id="h3-next-match">SEURAAVA OTTELU</h3>
+                    <div id="game-label" class="game-name">Ladataan...</div>
+                    <div class="game-meta">Matinkylän TN 1</div>
+                </div>
+                <div id="timer" class="timer-display">--:--</div>
+            </div>
+        </div>
 
-    loadData();
-}
+        <div class="card" onclick="openModal('weather')" style="background: linear-gradient(135deg, #00b4db, #0083b0); color: white;">
+            <h3 id="h3-weather">SÄÄ</h3>
+            <div id="temp" style="font-size: 48px; font-weight: 900;">--°C</div>
+        </div>
 
-async function loadData() {
-    try {
-        const res = await fetch(`data-${currentLang}.json?v=${Date.now()}`);
-        pageData = await res.json();
-        
-        document.getElementById('game-label').innerText = "HooGee vs " + pageData.config.seuraavaPeli.vastustaja;
-        document.getElementById('welcome-p1').innerText = pageData.welcomeText1;
-        
-        // Otteluraportin teksti - lyhenne 1 rivi tyhjää alareunassa
-        const fullReport = pageData.config.latestReport;
-        const reportPreview = fullReport.substring(0, 120) + "...";
-        document.getElementById('report-preview').innerText = reportPreview;
-        
-        document.getElementById('results-list').innerHTML = pageData.config.tulokset.map(r => 
-            `<div>${r.peli} <strong style="float:right">${r.tulos}</strong></div>`
-        ).join('');
+        <div class="card tall" onclick="openModal('ajankohtaista')">
+            <h3 style="color: var(--news-pink);" id="h3-news">AJANKOHTAISTA</h3>
+            <div id="news-list" class="list-content"></div>
+        </div>
 
-        document.getElementById('news-list').innerHTML = pageData.config.events.map(e => 
-            `<div><strong>${e.pvm}</strong> ${e.nimi}</div>`
-        ).join('');
-        
-        document.getElementById('partner-logos').innerHTML = pageData.config.kumppanit.map(p => 
-            `<a href="${p.linkki}" target="_blank" onclick="event.stopPropagation()"><img src="${p.logo}" alt="${p.nimi}"></a>`
-        ).join('');
-        
-        startTimer(pageData.config.seuraavaPeli.aika);
-        fetchWeather();
-    } catch(e) { console.error("Virhe ladattaessa JSONia:", e); }
-}
+        <div class="card tall dark" onclick="openModal('tulokset')">
+            <h3 id="h3-results">TULOKSET</h3>
+            <div id="results-list" class="list-content"></div>
+        </div>
 
-function startTimer(targetTime) {
-    const el = document.getElementById('timer');
-    function update() {
-        const diff = new Date(targetTime) - new Date();
-        if (diff <= 0) { el.innerText = "LIVE"; return; }
-        const d = Math.floor(diff / 86400000);
-        const h = Math.floor((diff % 86400000) / 3600000);
-        const m = Math.floor((diff % 3600000) / 60000);
-        el.innerText = `${d}pv ${h}h ${m}min`;
-    }
-    update();
-    setInterval(update, 60000);
-}
+        <div class="card large" onclick="openModal('tervetuloa')">
+            <h3 id="h3-welcome">TERVETULOA</h3>
+            <p id="welcome-p1" class="p-text"></p>
+            <div class="cta-box" id="cta-text" onclick="openModal('ilmoittautuminen'); event.stopPropagation();">TULE MUKAAN</div>
+        </div>
 
-function openModal(id) {
-    const body = document.getElementById('modalBody');
-    let content = "";
+        <div class="card" onclick="openModal('otteluraportit')">
+            <h3 id="h3-report">OTTELURAPORTTI</h3>
+            <p id="report-preview" class="p-small"></p>
+        </div>
 
-    if (id === 'ilmoittautuminen') {
-        content = `
-            <h2>${currentLang === 'fi' ? 'Ilmoittautuminen' : 'Registrering'}</h2>
-            <form id="signup-form" style="display: flex; flex-direction: column; gap: 15px;">
-                <input type="text" placeholder="${currentLang === 'fi' ? 'Nimi' : 'Namn'}" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
-                <input type="email" placeholder="${currentLang === 'fi' ? 'Sähköposti' : 'E-post'}" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
-                <input type="text" placeholder="${currentLang === 'fi' ? 'Koulu' : 'Skola'}" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
-                <input type="number" placeholder="${currentLang === 'fi' ? 'Syntymävuosi' : 'Födelseår'}" min="1900" max="2020" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
-                <input type="text" placeholder="${currentLang === 'fi' ? 'Pelipaikka' : 'Spelposition'}" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
-                <input type="email" placeholder="${currentLang === 'fi' ? 'Huoltajan sähköposti' : 'Värdnadshavares e-post'}" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
-                <input type="tel" placeholder="${currentLang === 'fi' ? 'Huoltajan puhelinnumero' : 'Värdnadshavares telefon'}" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
-                <button type="submit" style="padding: 12px; background: var(--hoogee-blue); color: white; border: none; border-radius: 8px; font-weight: 900; cursor: pointer;">
-                    ${currentLang === 'fi' ? 'Ilmoittaudu' : 'Registrera'}
-                </button>
-            </form>
-        `;
-    }
-    else if (id === 'kentat') {
-        const k = [
-            ["Matinkylä TN1", "https://www.google.com/maps/search/?api=1&query=Matinkylän+tekonurmi+1"],
-            ["Matinkylä TN2", "https://www.google.com/maps/search/?api=1&query=Matinkylän+tekonurmi+2"],
-            ["Toppelundin kenttä", "https://www.google.com/maps/search/?api=1&query=Toppelundin+kenttä"],
-            ["Westendinpuisto", "https://www.google.com/maps/search/?api=1&query=Westendinpuiston+kenttä"],
-            ["Opimäen kenttä", "https://www.google.com/maps/search/?api=1&query=Opimäen+kenttä"],
-            ["Kaitaa", "https://www.google.com/maps/search/?api=1&query=Kaitaan+kenttä"],
-            ["Myntinsyrjän halli", "https://www.google.com/maps/search/?api=1&query=Myntinsyrjän+halli"]
-        ];
-        content = `<h2>${uiTexts[currentLang].fields}</h2>` + 
-                  k.map(f => `<a class="map-link" href="${f[1]}" target="_blank">${f[0]} ↗</a>`).join('');
-    } 
-    else if (id === 'driftshop') {
-        content = `<h2>Drift Shop</h2>
-                   <p><b>${currentLang === 'fi' ? 'Kategoriat:' : 'Kategorier:'}</b></p>
-                   <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-                     <div><h3>KENGÄT</h3><p>Adidas Copa 38 (10€)</p><p>Nike Mercurial 40 (15€)</p></div>
-                     <div><h3>PAIDAT</h3><p>HooGee M (5€)</p><p>Huppari L (15€)</p></div>
-                   </div>`;
-    } 
-    else if (id === 'otteluraportit') {
-        content = `<h2>${uiTexts[currentLang].report}</h2>
-                   <p style="font-size:18px; line-height:1.6;">${(pageData.config.latestReport + " ").repeat(20)}</p>`;
-    }
+        <div class="card" id="some-card">
+            <h3 id="h3-some">SOME</h3>
+            <div class="some-links">
+                <a href="https://instagram.com/hoogee_official" target="_blank" onclick="event.stopPropagation()"><img src="assets/insta-logo.png" alt="Instagram" style="height:35px"></a>
+                <a href="https://facebook.com/hoogee" target="_blank" onclick="event.stopPropagation()"><img src="assets/fb-logo.png" alt="Facebook" style="height:35px"></a>
+            </div>
+        </div>
 
-    body.innerHTML = content;
-    document.getElementById('modalOverlay').style.display = 'flex';
-    
-    // Kun ilmoittautuminen-formi on auki, lisää event listener
-    if (id === 'ilmoittautuminen') {
-        document.getElementById('signup-form').addEventListener('submit', handleSignup);
-    }
-}
+        <div class="card" onclick="openModal('vuosikalenteri')" style="background: url('assets/vuosikalenteri.png') center/cover;">
+            <h3 class="bg-label" id="h3-year-cal">VUOSIKALENTERI</h3>
+        </div>
 
-function handleSignup(e) {
-    e.preventDefault();
-    alert(currentLang === 'fi' ? 'Kiitos ilmoittautumisesta! Vastaamme pian.' : 'Tack för registreringen! Vi svarar snart.');
-    closeModal();
-}
+        <div class="card wide" onclick="openModal('yhteistyo')">
+            <h3 id="h3-partners">YHTEISTYÖSSÄ</h3>
+            <div id="partner-logos" class="partners-right"></div>
+        </div>
 
-function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
-window.onclick = (e) => { if(e.target.id === 'modalOverlay') closeModal(); }
+        <div class="card map-card" onclick="openModal('kentat')" style="background: url('assets/kartta.png') center/cover;">
+            <div class="map-tag" id="h3-fields">KOTIKENTÄT</div>
+        </div>
 
-async function fetchWeather() {
-    try {
-        const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=60.15&longitude=24.74&current_weather=true");
-        const w = await res.json();
-        document.getElementById('temp').innerText = Math.round(w.current_weather.temperature) + "°C";
-    } catch(e) {}
-}
+        <div class="card shop-card" onclick="window.open('shop.html', '_blank')" style="background: url('assets/pelipaita.png') center/cover;">
+            <h3 class="bg-label">SHOP</h3>
+            <div class="shop-overlay" id="shop-status">OPEN</div>
+        </div>
 
-function openBoard() { if(prompt("Salasana") === "hoogee2026") alert("Tervetuloa hallituksen sivulle."); }
+        <div class="card" onclick="openModal('driftshop')">
+            <h3 id="h3-drift">DRIFT SHOP</h3>
+            <p id="drift-sub">Käytetyt varusteet</p>
+        </div>
 
-setLanguage('fi');
+        <div class="card" onclick="openBoard()"><h3>HALLITUS 🔒</h3></div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">×</span>
+            <div id="modalBody" class="modal-scrollable"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
