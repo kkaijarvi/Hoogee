@@ -1,97 +1,125 @@
-:root {
-    --hoogee-blue: #002d5a;
-    --news-pink: #ff69b4;
-    --bg-gray: #f2f4f7;
-    --g5: #1a2a3a;
+let currentLang = 'fi';
+let pageData = null;
+
+// Kieliasetukset
+const ui = {
+    fi: { mottoT: "HOOGEESSA ON", mottoB: "HYVÄ OLLA", nextM: "SEURAAVA OTTELU", weather: "SÄÄ", wLoc: "Espoo", news: "AJANKOHTAISTA", results: "TULOKSET", welcome: "TERVETULOA", report: "OTTELURAPORTTI", fields: "KOTIKENTÄT", drift: "DRIFT SHOP", driftSub: "Käytetyt varusteet", cta: "TULE MUKAAN", tactics: "PÄIVÄN TAKTIIKKA" },
+    se: { mottoT: "I HOOGEE ÄR DET", mottoB: "GOTT ATT VARA", nextM: "NÄSTA MATCH", weather: "VÄDER", wLoc: "Esbo", news: "AKTUELLT", results: "RESULTAT", welcome: "VÄLKOMMEN", report: "MATCHRAPPORT", fields: "HEMMAPLANER", drift: "DRIFT SHOP", driftSub: "Begagnad utrustning", cta: "KOM MED", tactics: "DAGENS TAKTIK" }
+};
+
+// Kielenvaihto
+async function setLanguage(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    const activeBtn = document.getElementById(`btn-${lang}`);
+    if (activeBtn) activeBtn.classList.add('active');
+    
+    const t = ui[lang];
+    // Päivitetään staattiset tekstit turvallisesti
+    const updateText = (id, text) => { if(document.getElementById(id)) document.getElementById(id).innerText = text; };
+    
+    updateText('motto-top', t.mottoT);
+    updateText('motto-bottom', t.mottoB);
+    updateText('h3-next-match', t.nextM);
+    updateText('h3-weather', t.weather);
+    updateText('weather-location', t.wLoc);
+    updateText('h3-news', t.news);
+    updateText('h3-results', t.results);
+    updateText('h3-welcome', t.welcome);
+    updateText('h3-report', t.report);
+    updateText('h3-fields', t.fields);
+    updateText('h3-drift', t.drift);
+    updateText('drift-sub', t.driftSub);
+    updateText('cta-text', t.cta);
+    updateText('h3-tactics', t.tactics);
+
+    await loadData();
 }
 
-body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-gray); color: var(--g5); overflow-x: hidden; }
+// Datan lataus
+async function loadData() {
+    try {
+        const res = await fetch(`data-${currentLang}.json?v=${Date.now()}`);
+        if (!res.ok) throw new Error("JSON-tiedostoa ei löydy");
+        pageData = await res.json();
+        
+        // Seuraava peli
+        if (pageData.config && pageData.config.seuraavaPeli) {
+            const peli = pageData.config.seuraavaPeli;
+            document.getElementById('game-label').innerText = "HooGee vs " + peli.vastustaja;
+            document.getElementById('game-venue').innerText = peli.paikka || "Matinkylä TN 1";
+            updateTimer(peli.aika);
+        }
 
-/* HEADER */
-.hero-container { padding: 40px; display: flex; align-items: center; gap: 40px; }
-.hero-logo { height: 140px; }
-.hero-motto-box { display: flex; flex-direction: column; text-transform: uppercase; color: var(--hoogee-blue); }
-.motto-row-top { font-weight: 100; font-size: 42px; line-height: 1.3; }
-.motto-row-bottom { font-weight: 900; font-size: 80px; line-height: 1.0; }
-
-.top-controls { margin-left: auto; display: flex; gap: 15px; }
-.lang-btn { cursor: pointer; font-weight: 900; opacity: 0.3; font-size: 18px; }
-.lang-btn.active { opacity: 1; border-bottom: 3px solid var(--hoogee-blue); }
-
-/* GRID SYSTEM */
-.container { 
-    padding: 20px; 
-    max-width: 1400px; 
-    margin: auto; 
-    display: grid; 
-    grid-template-columns: repeat(4, 1fr); 
-    grid-auto-rows: minmax(180px, auto); 
-    gap: 15px; 
+        // Tekstit
+        if(document.getElementById('welcome-p1')) document.getElementById('welcome-p1').innerText = pageData.welcomeText1 || "";
+        if(document.getElementById('tactics-text')) document.getElementById('tactics-text').innerText = pageData.tacticsText || "";
+        
+        // Raportti
+        if (pageData.config && pageData.config.latestReport) {
+            const rpt = pageData.config.latestReport;
+            const txt = typeof rpt === 'object' ? rpt.text : rpt;
+            if(document.getElementById('report-preview')) document.getElementById('report-preview').innerText = txt ? txt.substring(0, 85) + "..." : "";
+        }
+        
+        // Listat
+        if(document.getElementById('results-list')) {
+            document.getElementById('results-list').innerHTML = pageData.config.tulokset.map(r => `<div>${r.peli} <strong style="float:right">${r.tulos}</strong></div>`).join('');
+        }
+        if(document.getElementById('news-list')) {
+            document.getElementById('news-list').innerHTML = pageData.config.events.map(e => `<div><b>${e.pvm}</b> ${e.nimi}</div>`).join('');
+        }
+        
+        fetchWeather();
+    } catch(e) { 
+        console.error("Latausvirhe:", e); 
+        document.getElementById('game-label').innerText = "Virhe datan latauksessa";
+    }
 }
 
-.card { 
-    padding: 25px 25px 40px 25px; 
-    border-radius: 30px; 
-    background: white; 
-    cursor: pointer; 
-    display: flex; 
-    flex-direction: column; 
-    transition: 0.3s; 
-    position: relative; 
-    overflow: hidden; 
-}
-.card:hover:not(.footer-card) { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-
-.wide { grid-column: span 2; }
-.large { grid-column: span 2; grid-row: span 2; }
-.tall { grid-row: span 2; }
-.dark { background: var(--g5); color: white; }
-
-/* SPESIAALIKORTIT */
-.weather-card { background: linear-gradient(135deg, #00b4db, #0083b0); color: white; }
-.weather-loc-text { font-size: 14px; font-weight: 700; opacity: 0.9; margin-top: auto; }
-.map-card { background: var(--hoogee-blue) url('assets/kartta.png') center/cover no-repeat; color: white; }
-.map-tag { background: rgba(0, 45, 90, 0.8); padding: 5px 10px; border-radius: 5px; font-weight: 900; align-self: flex-start; }
-.bg-label { background: rgba(255,255,255,0.85); padding: 5px 10px; border-radius: 10px; display: inline-block; color: var(--hoogee-blue); }
-
-/* FOOTER LAATIKKO */
-.footer-card {
-    grid-column: 1 / -1;
-    background: none !important;
-    box-shadow: none !important;
-    cursor: default !important;
-    padding: 40px 20px !important;
-    text-align: center;
-}
-.footer-content { color: var(--hoogee-blue); line-height: 1.6; }
-.footer-content a { color: var(--hoogee-blue); text-decoration: none; font-weight: 700; }
-
-/* ELEMENTS */
-#temp { font-size: 48px; font-weight: 900; margin-top: 10px; }
-.game-flex { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
-.game-name { font-size: clamp(20px, 4vw, 28px); font-weight: 900; line-height: 1.1; margin: 10px 0; }
-.game-meta { color: var(--news-pink); font-weight: 700; font-size: 14px; }
-.timer-display { font-size: 24px; font-weight: 900; color: var(--news-pink); }
-.cta-box { background: var(--g5); color: white; padding: 15px; border-radius: 15px; text-align: center; margin-top: auto; font-weight: 900; }
-.italic-text { font-style: italic; margin-top: 10px; line-height: 1.4; }
-
-/* MOBIILI-SKAALAUS */
-@media (max-width: 1024px) {
-    .container { grid-template-columns: repeat(2, 1fr); }
-    .hero-logo { height: 100px; }
+function updateTimer(target) {
+    const el = document.getElementById('timer');
+    if(!el) return;
+    function tick() {
+        const diff = new Date(target) - new Date();
+        if (diff <= 0) { el.innerText = "LIVE"; return; }
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        el.innerText = `${d}pv ${h}h`;
+    }
+    tick();
+    setInterval(tick, 60000);
 }
 
-@media (max-width: 600px) {
-    .container { grid-template-columns: 1fr; padding: 10px; }
-    .wide, .large, .tall { grid-column: span 1; grid-row: span 1; }
-    .hero-container { flex-direction: column; text-align: center; padding: 20px; }
-    .top-controls { margin: 20px auto 0; }
-    .motto-row-top { font-size: 24px; }
-    .motto-row-bottom { font-size: 40px; }
-    .card { padding: 20px 20px 35px 20px; }
+async function fetchWeather() {
+    try {
+        const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=60.15&longitude=24.74&current_weather=true");
+        const w = await res.json();
+        const tempEl = document.getElementById('temp');
+        if(tempEl) tempEl.innerText = Math.round(w.current_weather.temperature) + "°C";
+    } catch(e) { 
+        if(document.getElementById('temp')) document.getElementById('temp').innerText = "??°C";
+    }
 }
 
-/* MODAL */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 10px; }
-.modal-content { background: white; padding: 30px; border-radius: 25px; width: 100%; max-width: 600px; max-height: 90vh; position: relative; overflow-y: auto; }
-.close-btn { position: absolute; top: 10px; right: 20px; font-size: 35px; cursor: pointer; }
+// Modal-toiminnot ja muut säilyvät ennallaan...
+function openModal(id) {
+    const body = document.getElementById('modalBody');
+    if(!body || !pageData) return;
+    let content = "";
+    if (id === 'taktiikka') {
+        content = `<h2>${ui[currentLang].tactics}</h2><p style="font-size:18px; line-height:1.6; white-space: pre-wrap;">${pageData.tacticsText}</p>`;
+    } else {
+        content = `<h2>${id.toUpperCase()}</h2><p>Tietoja päivitetään...</p>`;
+    }
+    body.innerHTML = content;
+    document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+function openBoard() { if(prompt("Salasana:") === "hoogee2026") alert("Tervetuloa!"); }
+
+// KÄYNNISTYS
+document.addEventListener('DOMContentLoaded', () => {
+    setLanguage('fi');
+});
