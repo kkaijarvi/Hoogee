@@ -27,6 +27,7 @@
                 <div class="game-info">
                     <h3 id="h3-next-match">SEURAAVA OTTELU</h3>
                     <div id="game-label" class="game-name">Ladataan...</div>
+                    <div id="game-venue" class="game-meta" style="color: var(--news-pink); font-weight: 700;"></div>
                 </div>
                 <div id="timer" class="timer-display">--:--</div>
             </div>
@@ -53,21 +54,18 @@
             <div class="cta-box" id="cta-text">TULE MUKAAN</div>
         </div>
 
+        <div class="card" onclick="openModal('taktiikka')">
+            <h3 id="h3-tactics">PÄIVÄN TAKTIIKKA</h3>
+            <p id="tactics-text" class="p-small" style="font-style: italic; margin-top: 10px;"></p>
+        </div>
+
         <div class="card" onclick="openModal('otteluraportit')">
             <h3 id="h3-report">OTTELURAPORTTI</h3>
             <p id="report-preview" class="p-small"></p>
         </div>
 
-        <div class="card" id="some-card">
-            <h3 id="h3-some">SOME</h3>
-            <div class="some-links">
-                <a href="https://instagram.com/hoogee_official" target="_blank" onclick="event.stopPropagation()"><img src="assets/insta-logo.png" alt="IG"></a>
-                <a href="https://facebook.com/hoogee" target="_blank" onclick="event.stopPropagation()"><img src="assets/fb-logo.png" alt="FB"></a>
-            </div>
-        </div>
-
-        <div class="card" onclick="openModal('vuosikalenteri')">
-            <h3 id="h3-year-cal">VUOSIKALENTERI</h3>
+        <div class="card" onclick="openModal('vuosikalenteri')" style="background: url('assets/vuosikalenteri.png') center/cover;">
+            <h3 class="bg-label" id="h3-year-cal">VUOSIKALENTERI</h3>
         </div>
 
         <div class="card wide" onclick="openModal('yhteistyo')">
@@ -76,7 +74,7 @@
         </div>
 
         <div class="card map-card" onclick="openModal('kentat')">
-            <h3 id="h3-fields">KOTIKENTÄT</h3>
+            <div class="map-tag" id="h3-fields">KOTIKENTÄT</div>
         </div>
 
         <div class="card" onclick="openModal('driftshop')">
