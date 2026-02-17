@@ -42,9 +42,9 @@ body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-g
 .team-sub-btn { background: #f0f2f5; padding: 10px; border-radius: 12px; text-align: center; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; }
 .team-sub-btn:hover { background: var(--hoogee-blue); color: white; }
 
-/* FOOTER (Ei boldia, kaikki samaa fonttia) */
+/* FOOTER */
 .footer-card { grid-column: 1 / -1; background: none !important; box-shadow: none !important; cursor: default !important; text-align: center; padding: 40px 20px !important; }
-.footer-content { color: var(--hoogee-blue); line-height: 1.6; font-weight: 400; font-style: normal; }
+.footer-content { color: var(--hoogee-blue); line-height: 1.6; font-weight: 400; }
 .footer-content p { margin: 5px 0; font-weight: 400 !important; }
 .footer-content a { color: var(--hoogee-blue); text-decoration: none; font-weight: 400 !important; }
 

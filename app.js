@@ -1,5 +1,7 @@
 let currentLang = 'fi';
 let pageData = null;
+let reportIndex = 0;
+let reportTimer = null;
 
 // DRIFT SHOP TUOTTEET
 const driftProducts = [
@@ -60,11 +62,7 @@ async function loadData() {
         document.getElementById('welcome-p1').innerText = pageData.welcomeText1;
         document.getElementById('tactics-text').innerText = pageData.tacticsText || "";
         
-        // Raportti-esikatselu (Nimi ja kirjoittaja)
-        const rpt = pageData.config.latestReport;
-        document.getElementById('report-preview').innerHTML = `<strong>${rpt.team}</strong><br><small>Kirjoittaja: ${rpt.author}</small>`;
-        
-        // Tulokset välirivillä
+        // TULOKSET
         document.getElementById('results-list').innerHTML = pageData.config.tulokset.map(r => 
             `<div class="list-item">${r.peli} <strong style="float:right">${r.tulos}</strong></div>`
         ).join('');
@@ -74,7 +72,51 @@ async function loadData() {
         
         updateTimer(pageData.config.seuraavaPeli.aika);
         fetchWeather();
+        startReportRotation();
     } catch(e) { console.error("Data error", e); }
+}
+
+// OTTELURAPORTTIEN KIERTO (2 sekunnin välein)
+function startReportRotation() {
+    if (reportTimer) clearInterval(reportTimer);
+    
+    const reports = pageData.config.allReports || [pageData.config.latestReport];
+    
+    const updateDisplay = () => {
+        const rpt = reports[reportIndex];
+        const previewEl = document.getElementById('report-preview');
+        
+        // Esikatselu: Joukkueet, kirjoittaja ja kaksi riviä tekstiä
+        previewEl.innerHTML = `
+            <div style="font-weight:900; color:var(--hoogee-blue); margin-bottom:2px;">${rpt.match || rpt.team}</div>
+            <div style="font-size:11px; color:gray; margin-bottom:8px;">Kirjoittaja: ${rpt.author}</div>
+            <div style="line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+                ${rpt.text}...
+            </div>
+        `;
+        
+        reportIndex = (reportIndex + 1) % reports.length;
+    };
+
+    updateDisplay();
+    reportTimer = setInterval(updateDisplay, 2000);
+}
+
+// Avaa parhaillaan näkyvä raportti popupissa
+function openCurrentReport() {
+    const reports = pageData.config.allReports || [pageData.config.latestReport];
+    // Koska index ehti jo kasvaa päivityksessä, otetaan edellinen
+    let currentIndex = (reportIndex - 1 + reports.length) % reports.length;
+    const rpt = reports[currentIndex];
+    
+    const body = document.getElementById('modalBody');
+    body.innerHTML = `
+        <h2>${rpt.match || rpt.team}</h2>
+        <p style="font-size:18px; line-height:1.6; margin-top:20px;">${rpt.text}</p>
+        <hr style="margin:20px 0; border:0; border-top:1px solid #eee;">
+        <p style="color:gray;">Kirjoittaja: ${rpt.author}</p>
+    `;
+    document.getElementById('modalOverlay').style.display = 'flex';
 }
 
 function openTeamModal(teamName) {
@@ -114,9 +156,6 @@ function openModal(id) {
         content = `<h2>Kotikentät</h2><ul>` + fields.map(f => `<li style="padding:12px 0; font-size:18px; border-bottom:1px solid #eee;">${f}</li>`).join('') + `</ul>`;
     } else if (id === 'yhteistyo') {
         content = `<h2>Yhteistyössä</h2><p>Lämmin kiitos kaikille tukijoillemme ja yhteistyökumppaneillemme. Teidän panoksenne mahdollistaa laadukkaan jalkapallotoiminnan sadoille lapsille ja nuorille joka päivä.</p>`;
-    } else if (id === 'otteluraportit') {
-        const rpt = pageData.config.latestReport;
-        content = `<h2>Raportti: ${rpt.team}</h2><p style="font-size:18px; line-height:1.6;">${rpt.text}</p><hr><p>Kirjoittaja: ${rpt.author}</p>`;
     } else if (id === 'tervetuloa') {
         content = `<h2>Tule mukaan!</h2>
             <form onsubmit="event.preventDefault(); alert('Kiitos! Otamme yhteyttä.'); closeModal();" style="margin-top:20px;">
@@ -129,8 +168,6 @@ function openModal(id) {
                 <input type="tel" placeholder="Huoltajan puhelinnumero" class="form-input" required>
                 <button type="submit" class="cta-box" style="border:none; cursor:pointer; width:100%; margin-top:10px;">LÄHETÄ</button>
             </form>`;
-    } else {
-        content = `<h2>${id.toUpperCase()}</h2><p>Tietoja päivitetään pian.</p>`;
     }
 
     body.innerHTML = content;

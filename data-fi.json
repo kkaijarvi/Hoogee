@@ -1,30 +1,78 @@
 {
-  "welcomeText1": "Haukilahden Pallo (HooGee) on espoolainen jalkapalloseura, joka on perustettu vuonna 1980. Tarjoamme laadukasta harrastetoimintaa ja kilpaurheilua kaikenikäisille. Meillä jokainen pelaaja on tärkeä!",
-  "tacticsText": "Tiivis puolustusmuoto ja nopeat käännöt laitojen kautta.",
+  "welcomeText1": "Tervetuloa Haukilahden Pallon viralliselle hubille! Olemme espoolainen jalkapalloseura, jossa intohimo peliin ja yhteisöllisyys kohtaavat. Tarjoamme laadukasta valmennusta ja futiksen riemua kaikenikäisille pelaajille matalalla kynnyksellä.",
+  "tacticsText": "Tämän päivän teemana on nopea suunnanmuutospeli. Kun pallo riistetään, haetaan välittömästi ensimmäinen syöttö eteenpäin vapaaseen tilaan. Puolustuksessa pidetään välit tiiviinä ja ohjataan vastustaja laitoihin.",
   "config": {
-    "seuraavaPeli": { 
-    "vastustaja": "EsPa", 
-    "aika": "2026-05-20T18:30:00",
-    "paikka": "Matinkylä TN 1" 
-},
-    "latestReport": {
-      "team": "T2011",
-      "author": "Petri Jokinen",
-      "text": "Upea taisteluvoitto Matinkylässä! HooGee hallitsi peliä alusta loppuun saakka. Joukkueen yhteispeli oli saumatonta ja viimeistely tehokasta. Maalintekijöinä loistivat tänään koko hyökkäyskalusto. Tästä on hyvä jatkaa seuraavaan koitokseen!"
+    "seuraavaPeli": {
+      "vastustaja": "KäPa",
+      "paikka": "Matinkylä TN 1",
+      "aika": "2026-02-25T18:30:00"
     },
-    "kumppanit": [
-      { "nimi": "InterSport", "logo": "assets/intersport.png", "linkki": "https://intersport.fi" },
-      { "nimi": "K-Market Sorsakivi", "logo": "assets/kmarket.png", "linkki": "https://k-ruoka.fi" }
+    "allReports": [
+      {
+        "match": "HooGee P2011 - KäPa",
+        "author": "Mikael Forssell",
+        "text": "Ottelu alkoi erittäin vauhdikkaasti Matinkylän iltavaloissa. HooGee otti hallinnan heti alusta alkaen ja vyörytti hyökkäyksiä laajalla rintamalla. Ensimmäinen maali nähtiin 15. minuutilla kulmapotkun jälkitilanteesta. Toisella puoliajalla puolustus pysyi tiiviinä ja loppulukemat 3-0 viimeisteltiin upealla kaukolaukauksella ylänurkkaan."
+      },
+      {
+        "match": "HooGee T2013 - EPS",
+        "author": "Tiina Järvinen",
+        "text": "Lauantain paikallisottelu oli täynnä tunnetta ja vauhtia. EPS meni alussa johtoon, mutta tyttöjen periksiantamaton asenne nosti joukkueen tasoihin ja lopulta ohi. Peliä leimasi hieno syöttöpeli ja loistava joukkuehenki, joka kantaa hedelmää vaikeissakin hetkissä. Valmennus oli erittäin tyytyväinen pallolliseen hallintaan."
+      },
+      {
+        "match": "HooGee Miehet - FC Espoo",
+        "author": "Antti Muurinen",
+        "text": "Miesten edustusjoukkue pelasi taktisesti kypsän ottelun sarjakärkeä vastaan. Puolustusmuoto pidettiin matalana ja vastahyökkäyksiin lähdettiin terävästi. Ottelu päättyi kutkuttavaan 1-1 tasapeliin, mikä tyydytti kumpaakin osapuolta. Erityismaininta maalivahdille useista huipputorjunnoista ottelun loppuhetkillä."
+      }
     ],
     "tulokset": [
-      { "peli": "HooGee M1 vs Pöxyt", "tulos": "3 - 1" },
-      { "peli": "HooGee T10 vs Honka", "tulos": "2 - 2" },
-      { "peli": "HooGee M2 vs EPS", "tulos": "1 - 0" }
+      {
+        "peli": "HooGee P12 - GrIFK",
+        "tulos": "2 - 1"
+      },
+      {
+        "peli": "HooGee T10 - Honka",
+        "tulos": "0 - 4"
+      },
+      {
+        "peli": "HooGee Miehet - Gnistan",
+        "tulos": "1 - 1"
+      },
+      {
+        "peli": "HooGee P15 - HJK",
+        "tulos": "3 - 2"
+      }
     ],
     "events": [
-      { "pvm": "10.4.", "nimi": "Kuvaukset" },
-      { "pvm": "25.4.", "nimi": "Talkoopäivä" },
-      { "pvm": "1.5.", "nimi": "Vapputurnaus" }
+      {
+        "pvm": "20.02.",
+        "nimi": "HooGee Talviturnaus - Matinkylä"
+      },
+      {
+        "pvm": "24.02.",
+        "nimi": "Valmentajakerho klo 18:00"
+      },
+      {
+        "pvm": "01.03.",
+        "nimi": "Kevätkauden varustetilaus päättyy"
+      },
+      {
+        "pvm": "15.03.",
+        "nimi": "Seuran sääntömääräinen kevätkokous"
+      }
+    ],
+    "kumppanit": [
+      {
+        "nimi": "Intersport",
+        "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Intersport_logo.svg/2560px-Intersport_logo.svg.png"
+      },
+      {
+        "nimi": "Lähitapiola",
+        "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Lahitapiola_logo.svg/1280px-Lahitapiola_logo.svg.png"
+      },
+      {
+        "nimi": "Stadium",
+        "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Stadium_logo.svg/1280px-Stadium_logo.svg.png"
+      }
     ]
   }
 }
