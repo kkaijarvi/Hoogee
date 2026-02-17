@@ -7,6 +7,7 @@
 
 body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-gray); color: var(--g5); overflow-x: hidden; }
 
+/* HEADER */
 .hero-container { padding: 40px; display: flex; align-items: center; gap: 40px; }
 .hero-logo { height: 140px; }
 .hero-motto-box { display: flex; flex-direction: column; text-transform: uppercase; color: var(--hoogee-blue); }
@@ -17,6 +18,7 @@ body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-g
 .lang-btn { cursor: pointer; font-weight: 900; opacity: 0.3; font-size: 18px; }
 .lang-btn.active { opacity: 1; border-bottom: 3px solid var(--hoogee-blue); }
 
+/* GRID */
 .container { padding: 20px; max-width: 1400px; margin: auto; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: minmax(180px, auto); gap: 15px; }
 .card { padding: 25px 25px 40px 25px; border-radius: 30px; background: white; cursor: pointer; display: flex; flex-direction: column; transition: 0.3s; position: relative; overflow: hidden; }
 .card:hover:not(.footer-card) { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
@@ -26,39 +28,33 @@ body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-g
 .tall { grid-row: span 2; }
 .dark { background: var(--g5); color: white; }
 
+/* LISTAT */
+.list-item { margin-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 5px; }
+.dark .list-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+/* FOOTER */
+.footer-card { grid-column: 1 / -1; background: none !important; box-shadow: none !important; cursor: default !important; text-align: center; }
+.footer-content { color: var(--hoogee-blue); line-height: 1.6; font-weight: 400; }
+.footer-content strong, .footer-content b { font-weight: 400; } /* Varmistetaan ettei ole boldia */
+.footer-content a { color: var(--hoogee-blue); text-decoration: none; }
+
+/* MUUT */
 .weather-card { background: linear-gradient(135deg, #00b4db, #0083b0); color: white; }
-.weather-loc-text { font-size: 14px; font-weight: 700; opacity: 0.9; margin-top: auto; }
 .map-card { background: var(--hoogee-blue) url('assets/kartta.png') center/cover no-repeat; color: white; }
 .map-tag { background: rgba(0, 45, 90, 0.8); padding: 5px 10px; border-radius: 5px; font-weight: 900; align-self: flex-start; }
-.bg-label { background: rgba(255,255,255,0.85); padding: 5px 10px; border-radius: 10px; display: inline-block; color: var(--hoogee-blue); }
-
-.footer-card { grid-column: 1 / -1; background: none !important; box-shadow: none !important; cursor: default !important; padding: 40px 20px !important; text-align: center; }
-.footer-content { color: var(--hoogee-blue); line-height: 1.6; }
-.footer-content a { color: var(--hoogee-blue); text-decoration: none; font-weight: 700; }
-
-#temp { font-size: 48px; font-weight: 900; margin-top: 10px; }
 .game-flex { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
-.game-name { font-size: clamp(20px, 4vw, 28px); font-weight: 900; line-height: 1.1; margin: 10px 0; }
-.game-meta { color: var(--news-pink); font-weight: 700; font-size: 14px; }
+.game-name { font-size: 28px; font-weight: 900; margin: 10px 0; }
 .timer-display { font-size: 24px; font-weight: 900; color: var(--news-pink); }
 .cta-box { background: var(--g5); color: white; padding: 15px; border-radius: 15px; text-align: center; margin-top: auto; font-weight: 900; }
-.italic-text { font-style: italic; margin-top: 10px; line-height: 1.4; }
-
-@media (max-width: 1024px) {
-    .container { grid-template-columns: repeat(2, 1fr); }
-    .hero-logo { height: 100px; }
-}
 
 @media (max-width: 600px) {
-    .container { grid-template-columns: 1fr; padding: 10px; }
+    .container { grid-template-columns: 1fr; }
     .wide, .large, .tall { grid-column: span 1; grid-row: span 1; }
-    .hero-container { flex-direction: column; text-align: center; padding: 20px; }
-    .top-controls { margin: 20px auto 0; }
-    .motto-row-top { font-size: 24px; }
-    .motto-row-bottom { font-size: 40px; }
-    .card { padding: 20px 20px 35px 20px; }
+    .hero-container { flex-direction: column; text-align: center; }
 }
 
+/* MODAL */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 10px; }
 .modal-content { background: white; padding: 30px; border-radius: 25px; width: 100%; max-width: 600px; max-height: 90vh; position: relative; overflow-y: auto; }
 .close-btn { position: absolute; top: 10px; right: 20px; font-size: 35px; cursor: pointer; }
+.form-input { padding: 12px; border-radius: 10px; border: 1px solid #ccc; width: 100%; box-sizing: border-box; }
