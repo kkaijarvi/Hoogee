@@ -1,0 +1,22 @@
+{
+  "welcomeText1": "Gäddviks Boll (HooGee) är en fotbollsförening från Esbo grundad 1980. Vi erbjuder kvalitativ hobbyverksamhet och tävlingsidrott för alla åldrar. Hos oss är varje spelare viktig!",
+  "tacticsText": "Tät försvarsform och snabba vändningar via kanterna.",
+  "config": {
+    "seuraavaPeli": { "vastustaja": "EsPa", "aika": "2026-05-20T18:30:00" },
+    "latestReport": "En fantastisk kämpaseger i Mattby! HooGee dominerade matchen från början till slut. Lagets samspel var sömlöst och avsluten effektiva. Idag strålade hela anfallskedjan som målskyttar. Det här är en bra grund att bygga vidare på inför nästa match!",
+    "kumppanit": [
+      { "nimi": "Intersport", "logo": "assets/intersport.png", "linkki": "https://intersport.fi/sv" },
+      { "nimi": "K-Market", "logo": "assets/kmarket.png", "linkki": "https://k-ruoka.fi" }
+    ],
+    "tulokset": [
+      { "peli": "HooGee H1 vs Pöxyt", "tulos": "3 - 1" },
+      { "peli": "HooGee F10 vs Honka", "tulos": "2 - 2" },
+      { "peli": "HooGee H2 vs EPS", "tulos": "1 - 0" }
+    ],
+    "events": [
+      { "pvm": "10.4.", "nimi": "Fotografering" },
+      { "pvm": "25.4.", "nimi": "Talkodag" },
+      { "pvm": "1.5.", "nimi": "Första maj turnering" }
+    ]
+  }
+}

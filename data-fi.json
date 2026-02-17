@@ -1,0 +1,22 @@
+{
+  "welcomeText1": "Haukilahden Pallo (HooGee) on espoolainen jalkapalloseura, joka on perustettu vuonna 1980. Tarjoamme laadukasta harrastetoimintaa ja kilpaurheilua kaikenikäisille. Meillä jokainen pelaaja on tärkeä!",
+  "tacticsText": "Tiivis puolustusmuoto ja nopeat käännöt laitojen kautta.",
+  "config": {
+    "seuraavaPeli": { "vastustaja": "EsPa", "aika": "2026-05-20T18:30:00" },
+    "latestReport": "Upea taisteluvoitto Matinkylässä! HooGee hallitsi peliä alusta loppuun saakka. Joukkueen yhteispeli oli saumatonta ja viimeistely tehokasta. Maalintekijöinä loistivat tänään koko hyökkäyskalusto. Tästä on hyvä jatkaa seuraavaan koitokseen!",
+    "kumppanit": [
+      { "nimi": "Intersport", "logo": "assets/intersport.png", "linkki": "https://intersport.fi" },
+      { "nimi": "K-Market", "logo": "assets/kmarket.png", "linkki": "https://k-ruoka.fi" }
+    ],
+    "tulokset": [
+      { "peli": "HooGee M1 vs Pöxyt", "tulos": "3 - 1" },
+      { "peli": "HooGee T10 vs Honka", "tulos": "2 - 2" },
+      { "peli": "HooGee M2 vs EPS", "tulos": "1 - 0" }
+    ],
+    "events": [
+      { "pvm": "10.4.", "nimi": "Kuvaukset" },
+      { "pvm": "25.4.", "nimi": "Talkoopäivä" },
+      { "pvm": "1.5.", "nimi": "Vapputurnaus" }
+    ]
+  }
+}
