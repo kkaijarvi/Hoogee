@@ -17,10 +17,11 @@ const driftProducts = [
 ];
 
 const fanProducts = [
-    { name: "HooGee Huivi", price: "20€", img: "https://img.freepik.com/free-vector/soccer-fans-scarf-realistic-set-with-isolated-images-long-scarves-blank-fabric-with-fringes-vector-illustration_1284-75464.jpg" },
-    { name: "HooGee Lippis", price: "15€", img: "https://cdn-icons-png.flaticon.com/512/7322/7322245.png" },
-    { name: "HooGee Juomapullo", price: "10€", img: "https://cdn-icons-png.flaticon.com/512/3100/3100566.png" },
-    { name: "HooGee Kangaskassi", price: "12€", img: "https://cdn-icons-png.flaticon.com/512/1040/1040232.png" }
+    { name: "Huivi", price: "20€" }, { name: "Lippis", price: "15€" },
+    { name: "Pullo", price: "10€" }, { name: "Kassi", price: "12€" },
+    { name: "Pipo", price: "18€" }, { name: "Sukat", price: "8€" },
+    { name: "Viiri", price: "5€" }, { name: "Muki", price: "12€" },
+    { name: "Sateenvarjo", price: "25€" }
 ];
 
 const fields = ["Matinkylä TN1", "Matinkylä TN2", "Toppelund", "Westendinpuisto", "Opinmäki", "Kaitaa", "Myntinsyrjä"];
@@ -71,7 +72,7 @@ async function loadData() {
         ).join('');
 
         document.getElementById('news-list').innerHTML = pageData.config.events.map(e => `<div><b>${e.pvm}</b> ${e.nimi}</div>`).join('');
-        document.getElementById('partner-logos').innerHTML = pageData.config.kumppanit.map(p => `<img src="${p.logo}" alt="${p.nimi}" style="height:35px; margin-left:10px;">`).join('');
+        document.getElementById('partner-logos').innerHTML = pageData.config.kumppanit.map(p => `<img src="${p.logo}" alt="${p.nimi}" style="height:35px; margin-left:15px; filter: grayscale(1); opacity: 0.7;">`).join('');
         
         updateTimer(pageData.config.seuraavaPeli.aika);
         fetchWeather();
@@ -93,16 +94,14 @@ function startReportRotation() {
                 ${rpt.text}...
             </div>
         `;
-        // Päivitetään indeksi raportin valintaa varten, mutta pidetään nykyinen "muistissa"
         reportIndex = (reportIndex + 1) % reports.length;
     };
     updateDisplay();
-    reportTimer = setInterval(updateDisplay, 4000); // 4 sekuntia
+    reportTimer = setInterval(updateDisplay, 4000);
 }
 
 function openCurrentReport() {
     const reports = pageData.config.allReports || [pageData.config.latestReport];
-    // Lasketaan oikea indeksi (koska startReportRotation ehti jo kasvattaa sitä)
     let idx = (reportIndex === 0) ? reports.length - 1 : reportIndex - 1;
     const rpt = reports[idx];
     
@@ -132,28 +131,48 @@ function openModal(id) {
     let content = "";
 
     if (id === 'potw') {
-        content = `<div style="text-align:center;"><img src="https://cdn-icons-png.flaticon.com/512/21/21104.png" style="height:120px; filter:grayscale(1);"><br><h2>Elias "Efu" Virtanen</h2><p>P2012</p></div>`;
+        content = `
+            <div style="text-align:center;">
+                <img src="https://cdn-icons-png.flaticon.com/512/21/21104.png" style="height:120px; filter:grayscale(1); margin-bottom:15px;">
+                <h2>Elias "Efu" Virtanen</h2>
+                <p><strong>Joukkue:</strong> P2012</p>
+                <div style="text-align:left; background:#f0f2f5; padding:20px; border-radius:20px; margin-top:20px;">
+                    <p><strong>Kuvaus:</strong> Elias on tällä viikolla osoittanut poikkeuksellista periksiantamattomuutta.</p>
+                    <p style="font-style:italic; margin-top:10px;">"Efu on ollut treeneissä todellinen esimerkin näyttäjä. Asenne on ollut 100% jokaisessa harjoituksessa." <br><strong>- Valmentaja</strong></p>
+                </div>
+            </div>`;
     } else if (id === 'fanikama') {
         content = `<h2>HooGee Shop</h2><div class="shop-grid">`;
         fanProducts.forEach(p => {
             content += `<div class="shop-item">
-                <img src="${p.img}" class="shop-img">
-                <h4>${p.name}</h4>
-                <p>${p.price}</p>
+                <div class="shop-placeholder">IMG</div>
+                <strong>${p.name}</strong><br>${p.price}
             </div>`;
         });
         content += `</div>`;
+    } else if (id === 'tervetuloa') {
+        content = `<h2>Tule mukaan!</h2>
+            <form onsubmit="event.preventDefault(); alert('Kiitos! Otamme yhteyttä.'); closeModal();" style="margin-top:20px;">
+                <input type="text" placeholder="Pelaajan nimi" class="form-input" required>
+                <input type="number" placeholder="Syntymävuosi" class="form-input" required>
+                <input type="text" placeholder="Koulu" class="form-input">
+                <input type="text" placeholder="Muut harrastukset" class="form-input">
+                <input type="text" placeholder="Aikaisempi seura" class="form-input">
+                <input type="email" placeholder="Huoltajan sähköposti" class="form-input" required>
+                <input type="tel" placeholder="Huoltajan puhelinnumero" class="form-input" required>
+                <button type="submit" class="cta-box" style="border:none; cursor:pointer; width:100%; margin-top:10px;">LÄHETÄ</button>
+            </form>`;
     } else if (id === 'driftshop') {
         content = `<h2>Drift Shop</h2>`;
         driftProducts.forEach(p => {
             content += `<div style="padding:10px; border-bottom:1px solid #eee;"><strong>${p.item}</strong> - ${p.price}<br><small>Myyjä: ${p.seller}</small></div>`;
         });
     } else if (id === 'kentat') {
-        content = `<h2>Kotikentät</h2><ul>` + fields.map(f => `<li>${f}</li>`).join('') + `</ul>`;
+        content = `<h2>Kotikentät</h2><ul>` + fields.map(f => `<li style="padding:10px 0; border-bottom:1px solid #eee;">${f}</li>`).join('') + `</ul>`;
     } else if (id === 'yhteistyo') {
-        content = `<h2>Kiitos kumppaneille</h2><p>Kiitos tukijoillemme! Teidän panoksenne mahdollistaa seuran toiminnan.</p>`;
-    } else if (id === 'tervetuloa') {
-        content = `<h2>Tule mukaan!</h2><form><input type="text" placeholder="Nimi" class="form-input" required><input type="email" placeholder="Sähköposti" class="form-input" required><button class="cta-box" style="width:100%; border:none;">LÄHETÄ</button></form>`;
+        content = `<h2>Yhteistyössä</h2><p>Lämmin kiitos kumppaneillemme, jotka mahdollistavat laadukkaan jalkapallotoiminnan Espoossa.</p>`;
+        content += `<div style="display:flex; flex-wrap:wrap; gap:20px; margin-top:20px; justify-content:center;">` + 
+            pageData.config.kumppanit.map(p => `<img src="${p.logo}" style="height:60px; filter:grayscale(1);">`).join('') + `</div>`;
     }
 
     body.innerHTML = content;

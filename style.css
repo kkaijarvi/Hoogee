@@ -41,10 +41,10 @@ body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-g
 .team-sub-btn { background: #f0f2f5; padding: 10px; border-radius: 12px; text-align: center; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; }
 .team-sub-btn:hover { background: var(--hoogee-blue); color: white; }
 
-/* FANIKAMA SHOP TYYLIT */
-.shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
-.shop-item { text-align: center; }
-.shop-img { width: 100%; border-radius: 15px; background: #f9f9f9; aspect-ratio: 1; object-fit: contain; }
+/* FANIKAMA SHOP (Pienemmät kuvat, enemmän tuotteita) */
+.shop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+.shop-item { text-align: center; font-size: 12px; }
+.shop-placeholder { width: 100%; aspect-ratio: 1; background: #e0e0e0; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #999; margin-bottom: 5px; font-weight: bold; }
 
 /* FOOTER */
 .footer-card { grid-column: 1 / -1; background: none !important; box-shadow: none !important; cursor: default !important; text-align: center; padding: 40px 20px !important; }
@@ -72,4 +72,5 @@ body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-g
     .container { grid-template-columns: 1fr; }
     .wide, .large, .tall { grid-column: span 1; grid-row: span 1; }
     .hero-container { flex-direction: column; text-align: center; }
+    .shop-grid { grid-template-columns: 1fr 1fr; }
 }
