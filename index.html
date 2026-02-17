@@ -27,7 +27,7 @@
                 <div class="game-info">
                     <h3 id="h3-next-match">SEURAAVA OTTELU</h3>
                     <div id="game-label" class="game-name">Ladataan...</div>
-                    <div id="game-venue" class="game-meta"></div>
+                    <div id="game-venue" class="game-meta" style="color: var(--news-pink); font-weight: 700;"></div>
                 </div>
                 <div id="timer" class="timer-display">--:--</div>
             </div>
@@ -36,6 +36,7 @@
         <div class="card weather-card" onclick="openModal('weather')">
             <h3 id="h3-weather">SÄÄ</h3>
             <div id="temp">--°C</div>
+            <div id="weather-location" style="font-size: 14px; font-weight: 700; opacity: 0.9; margin-top: auto;">Espoo</div>
         </div>
 
         <div class="card tall" onclick="openModal('ajankohtaista')">
@@ -65,7 +66,7 @@
         </div>
 
         <div class="card" onclick="openModal('vuosikalenteri')" style="background: url('assets/vuosikalenteri.png') center/cover;">
-            <h3 class="bg-label" id="h3-year-cal">VUOSIKALENTERI</h3>
+            <h3 class="bg-label" id="h3-year-cal" style="background: rgba(255,255,255,0.8); padding: 5px; border-radius: 5px; display: inline-block;">VUOSIKALENTERI</h3>
         </div>
 
         <div class="card wide" onclick="openModal('yhteistyo')">

@@ -8,17 +8,17 @@
 body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-gray); color: var(--g5); overflow-x: hidden; }
 
 /* HEADER */
-.hero-container { padding: 40px; display: flex; align-items: center; gap: 40px; flex-wrap: wrap; }
-.hero-logo { height: 120px; }
+.hero-container { padding: 40px; display: flex; align-items: center; gap: 40px; }
+.hero-logo { height: 140px; }
 .hero-motto-box { display: flex; flex-direction: column; text-transform: uppercase; color: var(--hoogee-blue); }
-.motto-row-top { font-weight: 100; font-size: clamp(24px, 4vw, 42px); line-height: 1.2; }
-.motto-row-bottom { font-weight: 900; font-size: clamp(40px, 8vw, 80px); line-height: 1.0; }
+.motto-row-top { font-weight: 100; font-size: 42px; line-height: 1.3; }
+.motto-row-bottom { font-weight: 900; font-size: 80px; line-height: 1.0; }
 
 .top-controls { margin-left: auto; display: flex; gap: 15px; }
-.lang-btn { cursor: pointer; font-weight: 900; opacity: 0.3; font-size: 20px; }
+.lang-btn { cursor: pointer; font-weight: 900; opacity: 0.3; font-size: 18px; }
 .lang-btn.active { opacity: 1; border-bottom: 3px solid var(--hoogee-blue); }
 
-/* GRID */
+/* GRID SYSTEM */
 .container { 
     padding: 20px; 
     max-width: 1400px; 
@@ -30,7 +30,7 @@ body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-g
 }
 
 .card { 
-    padding: 25px 25px 40px 25px; /* Lisätty alareunaan tilaa */
+    padding: 25px 25px 40px 25px; /* Reilu alareunan padding */
     border-radius: 30px; 
     background: white; 
     cursor: pointer; 
@@ -46,7 +46,7 @@ body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-g
 .tall { grid-row: span 2; }
 .dark { background: var(--g5); color: white; }
 
-/* KOTIKENTÄT TAUSTAKUVA */
+/* KOTIKENTÄT KUVALLA */
 .map-card { 
     background: var(--hoogee-blue) url('assets/kartta.png') center/cover no-repeat; 
     color: white; 
@@ -56,27 +56,25 @@ body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-g
 /* MOBIILI-SKAALAUS */
 @media (max-width: 1024px) {
     .container { grid-template-columns: repeat(2, 1fr); }
+    .hero-container { padding: 20px; gap: 20px; }
+    .hero-logo { height: 100px; }
 }
 
 @media (max-width: 600px) {
-    .hero-container { padding: 20px; justify-content: center; text-align: center; }
-    .top-controls { width: 100%; justify-content: center; margin-top: 20px; }
     .container { grid-template-columns: 1fr; padding: 10px; }
     .wide, .large, .tall { grid-column: span 1; grid-row: span 1; }
-    .hero-logo { height: 80px; }
+    .hero-container { flex-direction: column; text-align: center; }
+    .top-controls { margin: 20px 0 0 0; }
+    .motto-row-top { font-size: 24px; }
+    .motto-row-bottom { font-size: 44px; }
+    .card { padding: 20px 20px 30px 20px; min-height: 160px; }
 }
 
-/* MUUT */
-.game-flex { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
-.game-name { font-size: 24px; font-weight: 900; margin-top: 10px; }
-.timer-display { font-size: 24px; font-weight: 900; color: var(--news-pink); }
+/* SÄÄ JA OTTELU */
 .weather-card { background: linear-gradient(135deg, #00b4db, #0083b0); color: white; }
-#temp { font-size: 48px; font-weight: 900; }
-.cta-box { background: var(--g5); color: white; padding: 15px; border-radius: 15px; text-align: center; margin-top: 20px; font-weight: 900; }
-.partners-right { display: flex; gap: 15px; flex-wrap: wrap; justify-content: flex-end; margin-top: auto; }
-.partners-right img { height: 40px; filter: grayscale(1); opacity: 0.8; }
-
-/* MODAL */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 10px; }
-.modal-content { background: white; padding: 30px; border-radius: 25px; width: 100%; max-width: 600px; max-height: 90vh; position: relative; overflow-y: auto; }
-.close-btn { position: absolute; top: 10px; right: 20px; font-size: 35px; cursor: pointer; }
+#temp { font-size: 48px; font-weight: 900; margin-top: 10px; }
+.game-flex { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+.game-name { font-size: 28px; font-weight: 900; line-height: 1.1; margin: 10px 0; }
+.timer-display { font-size: 24px; font-weight: 900; color: var(--news-pink); white-space: nowrap; }
+.cta-box { background: var(--g5); color: white; padding: 15px; border-radius: 15px; text-align: center; margin-top: auto; font-weight: 900; }
+.partners-right img { height: 40px; margin-left: 10px; filter: grayscale(1); }
