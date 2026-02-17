@@ -3,7 +3,6 @@ let pageData = null;
 let reportIndex = 0;
 let reportTimer = null;
 
-// DRIFT SHOP TUOTTEET
 const driftProducts = [
     { item: "HooGee Pelipaita", size: "152cm", price: "15€", seller: "M. Virtanen" },
     { item: "Adidas Nappulakengät", size: "38", price: "20€", seller: "S. Korhonen" },
@@ -17,10 +16,15 @@ const driftProducts = [
     { item: "Treenishortsit", size: "152cm", price: "8€", seller: "O. Manner" }
 ];
 
-// KOTIKENTÄT
+const fanProducts = [
+    { name: "HooGee Huivi", price: "20€", img: "https://img.freepik.com/free-vector/soccer-fans-scarf-realistic-set-with-isolated-images-long-scarves-blank-fabric-with-fringes-vector-illustration_1284-75464.jpg" },
+    { name: "HooGee Lippis", price: "15€", img: "https://cdn-icons-png.flaticon.com/512/7322/7322245.png" },
+    { name: "HooGee Juomapullo", price: "10€", img: "https://cdn-icons-png.flaticon.com/512/3100/3100566.png" },
+    { name: "HooGee Kangaskassi", price: "12€", img: "https://cdn-icons-png.flaticon.com/512/1040/1040232.png" }
+];
+
 const fields = ["Matinkylä TN1", "Matinkylä TN2", "Toppelund", "Westendinpuisto", "Opinmäki", "Kaitaa", "Myntinsyrjä"];
 
-// JOUKKUEET JA PELAAJAT
 const teamRosters = {
     'P2018': ["Luka", "Aamos", "Oliver", "Nooa", "Elias", "Hugo", "Mikael", "Niilo", "Otso", "Peetu"],
     'T2018': ["Ellen", "Saga", "Aada", "Venla", "Alisa", "Isla", "Lumi", "Minea", "Selma", "Hilla"],
@@ -62,7 +66,6 @@ async function loadData() {
         document.getElementById('welcome-p1').innerText = pageData.welcomeText1;
         document.getElementById('tactics-text').innerText = pageData.tacticsText || "";
         
-        // TULOKSET
         document.getElementById('results-list').innerHTML = pageData.config.tulokset.map(r => 
             `<div class="list-item">${r.peli} <strong style="float:right">${r.tulos}</strong></div>`
         ).join('');
@@ -76,17 +79,13 @@ async function loadData() {
     } catch(e) { console.error("Data error", e); }
 }
 
-// OTTELURAPORTTIEN KIERTO (2 sekunnin välein)
 function startReportRotation() {
     if (reportTimer) clearInterval(reportTimer);
-    
     const reports = pageData.config.allReports || [pageData.config.latestReport];
     
     const updateDisplay = () => {
         const rpt = reports[reportIndex];
         const previewEl = document.getElementById('report-preview');
-        
-        // Esikatselu: Joukkueet, kirjoittaja ja kaksi riviä tekstiä
         previewEl.innerHTML = `
             <div style="font-weight:900; color:var(--hoogee-blue); margin-bottom:2px;">${rpt.match || rpt.team}</div>
             <div style="font-size:11px; color:gray; margin-bottom:8px;">Kirjoittaja: ${rpt.author}</div>
@@ -94,20 +93,18 @@ function startReportRotation() {
                 ${rpt.text}...
             </div>
         `;
-        
+        // Päivitetään indeksi raportin valintaa varten, mutta pidetään nykyinen "muistissa"
         reportIndex = (reportIndex + 1) % reports.length;
     };
-
     updateDisplay();
-    reportTimer = setInterval(updateDisplay, 2000);
+    reportTimer = setInterval(updateDisplay, 4000); // 4 sekuntia
 }
 
-// Avaa parhaillaan näkyvä raportti popupissa
 function openCurrentReport() {
     const reports = pageData.config.allReports || [pageData.config.latestReport];
-    // Koska index ehti jo kasvaa päivityksessä, otetaan edellinen
-    let currentIndex = (reportIndex - 1 + reports.length) % reports.length;
-    const rpt = reports[currentIndex];
+    // Lasketaan oikea indeksi (koska startReportRotation ehti jo kasvattaa sitä)
+    let idx = (reportIndex === 0) ? reports.length - 1 : reportIndex - 1;
+    const rpt = reports[idx];
     
     const body = document.getElementById('modalBody');
     body.innerHTML = `
@@ -131,43 +128,32 @@ function openTeamModal(teamName) {
 
 function openModal(id) {
     const body = document.getElementById('modalBody');
-    if(!pageData && id !== 'potw') return;
+    if(!pageData && !['potw', 'fanikama'].includes(id)) return;
     let content = "";
 
     if (id === 'potw') {
-        content = `
-            <div style="text-align:center;">
-                <img src="https://cdn-icons-png.flaticon.com/512/21/21104.png" style="height:120px; filter:grayscale(1); margin-bottom:15px;">
-                <h2>Elias "Efu" Virtanen</h2>
-                <p><strong>Joukkue:</strong> P2012</p>
-                <div style="text-align:left; background:#f0f2f5; padding:20px; border-radius:20px; margin-top:20px;">
-                    <p><strong>Kuvaus:</strong> Elias on tällä viikolla osoittanut poikkeuksellista periksiantamattomuutta. Hän on kehittynyt erityisesti pallonhallinnassa ja pelin luvussa.</p>
-                    <p style="font-style:italic; margin-top:10px;">"Efu on ollut treeneissä todellinen esimerkin näyttäjä. Asenne on ollut 100% jokaisessa harjoituksessa ja se näkyi viikonlopun peliesityksissä." <br><strong>- Valmentaja</strong></p>
-                </div>
+        content = `<div style="text-align:center;"><img src="https://cdn-icons-png.flaticon.com/512/21/21104.png" style="height:120px; filter:grayscale(1);"><br><h2>Elias "Efu" Virtanen</h2><p>P2012</p></div>`;
+    } else if (id === 'fanikama') {
+        content = `<h2>HooGee Shop</h2><div class="shop-grid">`;
+        fanProducts.forEach(p => {
+            content += `<div class="shop-item">
+                <img src="${p.img}" class="shop-img">
+                <h4>${p.name}</h4>
+                <p>${p.price}</p>
             </div>`;
+        });
+        content += `</div>`;
     } else if (id === 'driftshop') {
-        content = `<h2>Drift Shop</h2><p>Käytetyt varusteet:</p>`;
+        content = `<h2>Drift Shop</h2>`;
         driftProducts.forEach(p => {
-            content += `<div style="padding:12px; border-bottom:1px solid #eee;">
-                <strong>${p.item} (${p.size})</strong> - ${p.price}<br>
-                <small>Myyjä: ${p.seller}</small></div>`;
+            content += `<div style="padding:10px; border-bottom:1px solid #eee;"><strong>${p.item}</strong> - ${p.price}<br><small>Myyjä: ${p.seller}</small></div>`;
         });
     } else if (id === 'kentat') {
-        content = `<h2>Kotikentät</h2><ul>` + fields.map(f => `<li style="padding:12px 0; font-size:18px; border-bottom:1px solid #eee;">${f}</li>`).join('') + `</ul>`;
+        content = `<h2>Kotikentät</h2><ul>` + fields.map(f => `<li>${f}</li>`).join('') + `</ul>`;
     } else if (id === 'yhteistyo') {
-        content = `<h2>Yhteistyössä</h2><p>Lämmin kiitos kaikille tukijoillemme ja yhteistyökumppaneillemme. Teidän panoksenne mahdollistaa laadukkaan jalkapallotoiminnan sadoille lapsille ja nuorille joka päivä.</p>`;
+        content = `<h2>Kiitos kumppaneille</h2><p>Kiitos tukijoillemme! Teidän panoksenne mahdollistaa seuran toiminnan.</p>`;
     } else if (id === 'tervetuloa') {
-        content = `<h2>Tule mukaan!</h2>
-            <form onsubmit="event.preventDefault(); alert('Kiitos! Otamme yhteyttä.'); closeModal();" style="margin-top:20px;">
-                <input type="text" placeholder="Pelaajan nimi" class="form-input" required>
-                <input type="number" placeholder="Syntymävuosi" class="form-input" required>
-                <input type="text" placeholder="Koulu" class="form-input">
-                <input type="text" placeholder="Muut harrastukset" class="form-input">
-                <input type="text" placeholder="Aikaisempi seura" class="form-input">
-                <input type="email" placeholder="Huoltajan sähköposti" class="form-input" required>
-                <input type="tel" placeholder="Huoltajan puhelinnumero" class="form-input" required>
-                <button type="submit" class="cta-box" style="border:none; cursor:pointer; width:100%; margin-top:10px;">LÄHETÄ</button>
-            </form>`;
+        content = `<h2>Tule mukaan!</h2><form><input type="text" placeholder="Nimi" class="form-input" required><input type="email" placeholder="Sähköposti" class="form-input" required><button class="cta-box" style="width:100%; border:none;">LÄHETÄ</button></form>`;
     }
 
     body.innerHTML = content;
@@ -175,19 +161,15 @@ function openModal(id) {
 }
 
 function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
-
 function updateTimer(target) {
     const el = document.getElementById('timer');
     const tick = () => {
         const diff = new Date(target) - new Date();
         if (diff <= 0) { el.innerText = "LIVE"; return; }
-        const d = Math.floor(diff / 86400000);
-        const h = Math.floor((diff % 86400000) / 3600000);
-        el.innerText = `${d}pv ${h}h`;
+        el.innerText = `${Math.floor(diff / 86400000)}pv ${Math.floor((diff % 86400000) / 3600000)}h`;
     };
     tick(); setInterval(tick, 60000);
 }
-
 async function fetchWeather() {
     try {
         const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=60.15&longitude=24.74&current_weather=true");
@@ -195,7 +177,6 @@ async function fetchWeather() {
         document.getElementById('temp').innerText = Math.round(w.current_weather.temperature) + "°C";
     } catch(e) {}
 }
-
-function openBoard() { if(prompt("Salasana:") === "hoogee2026") alert("Tervetuloa!"); }
+function openBoard() { if(prompt("Salasana:") === "hoogee2026") alert("Hallitus"); }
 
 document.addEventListener('DOMContentLoaded', () => setLanguage('fi'));
