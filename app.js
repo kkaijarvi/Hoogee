@@ -1,19 +1,9 @@
 let currentLang = 'fi';
 let pageData = null;
 
-const uiTexts = {
-    fi: {
-        mottoT: "HOOGEESSA ON", mottoB: "HYVÄ OLLA", nextM: "SEURAAVA OTTELU",
-        weather: "SÄÄ", news: "AJANKOHTAISTA", results: "TULOKSET", 
-        welcome: "TERVETULOA", report: "OTTELURAPORTTI", fields: "KOTIKENTÄT",
-        drift: "DRIFT SHOP", driftSub: "Käytetyt varusteet", cta: "TULE MUKAAN"
-    },
-    se: {
-        mottoT: "I HOOGEE ÄR DET", mottoB: "GOTT ATT VARA", nextM: "NÄSTA MATCH",
-        weather: "VÄDER", news: "AKTUELLT", results: "RESULTAT", 
-        welcome: "VÄLKOMMEN", report: "MATCHRAPPORT", fields: "HEMMAPLANER",
-        drift: "DRIFT SHOP", driftSub: "Begagnad utrustning", cta: "KOM MED"
-    }
+const ui = {
+    fi: { mottoT: "HOOGEESSA ON", mottoB: "HYVÄ OLLA", nextM: "SEURAAVA OTTELU", weather: "SÄÄ", news: "AJANKOHTAISTA", results: "TULOKSET", welcome: "TERVETULOA", report: "OTTELURAPORTTI", fields: "KOTIKENTÄT", drift: "DRIFT SHOP", driftSub: "Käytetyt varusteet", cta: "TULE MUKAAN" },
+    se: { mottoT: "I HOOGEE ÄR DET", mottoB: "GOTT ATT VARA", nextM: "NÄSTA MATCH", weather: "VÄDER", news: "AKTUELLT", results: "RESULTAT", welcome: "VÄLKOMMEN", report: "MATCHRAPPORT", fields: "HEMMAPLANER", drift: "DRIFT SHOP", driftSub: "Begagnad utrustning", cta: "KOM MED" }
 };
 
 async function setLanguage(lang) {
@@ -21,7 +11,7 @@ async function setLanguage(lang) {
     document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(`btn-${lang}`).classList.add('active');
     
-    const t = uiTexts[lang];
+    const t = ui[lang];
     document.getElementById('motto-top').innerText = t.mottoT;
     document.getElementById('motto-bottom').innerText = t.mottoB;
     document.getElementById('h3-next-match').innerText = t.nextM;
@@ -47,24 +37,16 @@ async function loadData() {
         document.getElementById('welcome-p1').innerText = pageData.welcomeText1;
         
         const rpt = pageData.config.latestReport;
-        const previewText = typeof rpt === 'object' ? rpt.text : rpt;
-        document.getElementById('report-preview').innerText = previewText.substring(0, 100) + "...";
+        const txt = typeof rpt === 'object' ? rpt.text : rpt;
+        document.getElementById('report-preview').innerText = txt.substring(0, 100) + "...";
         
-        document.getElementById('results-list').innerHTML = pageData.config.tulokset.map(r => 
-            `<div>${r.peli} <strong style="float:right">${r.tulos}</strong></div>`
-        ).join('');
-
-        document.getElementById('news-list').innerHTML = pageData.config.events.map(e => 
-            `<div><strong>${e.pvm}</strong> ${e.nimi}</div>`
-        ).join('');
-        
-        document.getElementById('partner-logos').innerHTML = pageData.config.kumppanit.map(p => 
-            `<a href="${p.linkki}" target="_blank" onclick="event.stopPropagation()"><img src="${p.logo}" alt="${p.nimi}"></a>`
-        ).join('');
+        document.getElementById('results-list').innerHTML = pageData.config.tulokset.map(r => `<div>${r.peli} <strong style="float:right">${r.tulos}</strong></div>`).join('');
+        document.getElementById('news-list').innerHTML = pageData.config.events.map(e => `<div><b>${e.pvm}</b> ${e.nimi}</div>`).join('');
+        document.getElementById('partner-logos').innerHTML = pageData.config.kumppanit.map(p => `<img src="${p.logo}" alt="${p.nimi}">`).join('');
         
         startTimer(pageData.config.seuraavaPeli.aika);
         fetchWeather();
-    } catch(e) { console.error("Latausvirhe:", e); }
+    } catch(e) { console.error("JSON virhe"); }
 }
 
 function startTimer(target) {
@@ -84,73 +66,40 @@ function openModal(id) {
     const body = document.getElementById('modalBody');
     let content = "";
 
-    if (id === 'kentat') {
-        const k = [
-            ["Matinkylä TN1", "https://www.google.com/maps/search/Matinkylän+tekonurmi+1"],
-            ["Matinkylä TN2", "https://www.google.com/maps/search/Matinkylän+tekonurmi+2"],
-            ["Toppelund", "https://www.google.com/maps/search/Toppelundin+kenttä"],
-            ["Westendinpuisto", "https://www.google.com/maps/search/Westendinpuiston+tekonurmi"],
-            ["Opimäki", "https://www.google.com/maps/search/Opimäen+kenttä"]
-        ];
-        content = `<h2>${uiTexts[currentLang].fields}</h2>` + 
-                  k.map(f => `<a class="map-link" href="${f[1]}" target="_blank">${f[0]} ↗</a>`).join('');
-    } 
-    else if (id === 'driftshop') {
+    if (id === 'driftshop') {
         const items = [
-            { n: "Adidas Copa Pure", s: "38", p: "15€", d: "Hyväkuntoiset nappikset" },
-            { n: "HooGee Treenipaita", s: "140cm", p: "5€", d: "Ehjä ja siisti" },
-            { n: "Säärisuojat Nike", s: "S", p: "5€", d: "Vähän käytetyt" },
-            { n: "HooGee Tuulitakki", s: "M", p: "20€", d: "Uudenveroinen" },
-            { n: "Puma Maalivahdin hanskat", s: "7", p: "10€", d: "Kämmenissä hieman kulumaa" }
+            {n: "Adidas Copa Pure", s: "38", p: "15€"},
+            {n: "HooGee Treenipaita", s: "140cm", p: "5€"},
+            {n: "Säärisuojat", s: "S", p: "5€"}
         ];
-        content = `<h2>Drift Shop</h2><p>Kierrätä varusteet seuran sisällä. Ota yhteys myyjään kentällä!</p>
-                   <div class="drift-grid">
-                   ${items.map(i => `
-                     <div class="drift-item">
-                        <strong>${i.n}</strong>
-                        <span>Koko: ${i.s} | <b>${i.p}</b></span>
-                        <small>${i.d}</small>
-                     </div>`).join('')}
-                   </div>`;
+        content = `<h2>Drift Shop</h2>` + items.map(i => `
+            <div class="drift-item">
+                <strong>${i.n}</strong><br>Koko: ${i.s} | Hinta: ${i.p}
+            </div>`).join('');
     } 
     else if (id === 'tervetuloa') {
-        content = `<h2>${uiTexts[currentLang].cta}</h2>
-                   <p>Täytä tiedot, niin olemme sinuun yhteydessä ja sovimme kokeilutreenit!</p>
-                   <form class="reg-form" onsubmit="handleReg(event)">
-                        <input type="text" placeholder="Pelaajan nimi" required>
-                        <input type="number" placeholder="Syntymävuosi" required>
-                        <input type="email" placeholder="Huoltajan sähköposti" required>
-                        <select required>
-                            <option value="">Valitse taso</option>
-                            <option value="aloittelija">Aloittelija</option>
-                            <option value="harraste">Harraste</option>
-                            <option value="kilpa">Kilpa</option>
-                        </select>
-                        <textarea placeholder="Terveiset valmentajalle..."></textarea>
-                        <button type="submit" class="cta-box" style="border:none; width:100%; cursor:pointer;">LÄHETÄ</button>
-                   </form>`;
+        content = `<h2>Ilmoittaudu mukaan</h2>
+            <form class="reg-form" onsubmit="event.preventDefault(); alert('Kiitos!'); closeModal();">
+                <input type="text" placeholder="Pelaajan nimi" required>
+                <input type="email" placeholder="Sähköposti" required>
+                <select><option>Aloittelija</option><option>Harraste</option><option>Kilpa</option></select>
+                <button type="submit" class="cta-box" style="border:none; cursor:pointer">LÄHETÄ</button>
+            </form>`;
+    }
+    else if (id === 'kentat') {
+        const k = [["Matinkylä TN1", "https://maps.google.com"], ["Toppelund", "https://maps.google.com"]];
+        content = `<h2>Kotikentät</h2>` + k.map(f => `<a class="map-link" href="${f[1]}" target="_blank">${f[0]} ↗</a>`).join('');
     }
     else if (id === 'otteluraportit') {
         const rpt = pageData.config.latestReport;
-        const text = typeof rpt === 'object' ? rpt.text : rpt;
-        content = `<h2>${uiTexts[currentLang].report}</h2><p style="font-size:18px;">${text}</p>`;
-    } 
-    else {
-        content = `<h2>${id}</h2><p>Sisältöä ladataan pian...</p>`;
+        content = `<h2>Otteluraportti</h2><p>${typeof rpt === 'object' ? rpt.text : rpt}</p>`;
     }
 
     body.innerHTML = content;
     document.getElementById('modalOverlay').style.display = 'flex';
 }
 
-function handleReg(e) {
-    e.preventDefault();
-    alert("Kiitos ilmoittautumisesta! Olemme yhteydessä pian.");
-    closeModal();
-}
-
 function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
-window.onclick = (e) => { if(e.target.id === 'modalOverlay') closeModal(); }
 
 async function fetchWeather() {
     try {
@@ -160,8 +109,6 @@ async function fetchWeather() {
     } catch(e) {}
 }
 
-function openBoard() {
-    if(prompt("Salasana:") === "hoogee2026") alert("Tervetuloa!");
-}
+function openBoard() { if(prompt("Salasana:") === "hoogee2026") alert("Tervetuloa!"); }
 
 setLanguage('fi');
